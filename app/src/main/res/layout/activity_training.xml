@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TrainingActivity">
+
+    <TextView
+        android:id="@+id/free_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:textColor="@android:color/black"
+        android:textSize="36sp"
+        android:text="Free mode"/>
+
+    <TextView
+        android:id="@+id/keep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/free_mode"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        android:text="坚持住！"/>
+
+    <TextView
+        android:id="@+id/count_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:textSize="120sp"
+        android:text="10"/>
+
+    <LinearLayout
+        android:id="@+id/select_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/body_part"
+        android:layout_toEndOf="@id/body_part"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            style="android:attr/borderlessButtonStyle"
+            android:gravity="center"
+            android:background="@color/colorButtonBackground"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:text="下半身"/>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            style="android:attr/borderlessButtonStyle"
+            android:gravity="center"
+            android:background="@color/colorTitleBackground"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:text="上半身"/>
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            style="android:attr/borderlessButtonStyle"
+            android:gravity="center"
+            android:background="@color/colorTitleBackground"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:text="腹部核心"/>
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="10dp"
+            style="android:attr/borderlessButtonStyle"
+            android:gravity="center"
+            android:background="@color/colorTitleBackground"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:text="俯卧撑"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/body_part"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottom_layout"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/upper_body" />
+
+    <RelativeLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp">
+
+        <RelativeLayout
+            android:id="@+id/count"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true">
+
+            <TextView
+                android:id="@+id/count_value"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:textSize="36sp"
+                android:text="123"/>
+
+            <TextView
+                android:id="@+id/count_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/count_value"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:textSize="30sp"
+                android:text="counts"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/weight"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true">
+
+            <TextView
+                android:id="@+id/weight_value"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:textSize="36sp"
+                android:text="50"/>
+
+            <TextView
+                android:id="@+id/weight_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/weight_value"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:textSize="30sp"
+                android:text="LBS"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/time_value"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:drawableStart="@drawable/time_white"
+            android:textColor="@android:color/black"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:text="00:32:20"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

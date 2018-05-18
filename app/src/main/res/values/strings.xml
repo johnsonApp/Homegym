@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Homegym</string>
+    <string name="unconnect_status">unconnect</string>
+    <string name="connected_status">connected</string>
+    <string name="homepage_info1">Hello,Joseph</string>
+    <string name="homepage_info2">thigs look very good</string>
+    <string name="homepage_info3">keep it!</string>
+    <string name="create_plan">Create your plan</string>
+    <string name="connect_equipment">CONNECT HOMEGYM</string>
+    <string name="start_training">START</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="free_mode">Free mode</string>
+    <string name="select_trainging_body">Please select body which you would like to training</string>
+    <string name="selected_someone">Training your </string>
+    <string name="upper_body">upper body</string>
+    <string name="lower_body">lower body</string>
+    <string name="chest_body">chest</string>
+    <string name="core_body">core</string>
+
+    <string name="connect_ble_warning">Your APP still not connect to the Homegym</string>
+    <string name="connect_ble_warning1">Connect your homegym to start the sport</string>
+    <string name="connect_ble_connect">CONNECT</string>
+
+
+    <string name="scanning">scanning...</string>
+    <string name="connecting">connecting...</string>
+    <string name="disconnecting">disconnecting...</string>
+    <string name="dev_conn_number">Connected device number：</string>
+</resources>

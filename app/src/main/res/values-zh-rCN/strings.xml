@@ -1,0 +1,18 @@
+<resources>
+    <string name="free_mode">自由训练</string>
+    <string name="select_trainging_body">选择你想要锻炼的部位</string>
+    <string name="selected_someone">鍛煉你的</string>
+    <string name="upper_body">上半身</string>
+    <string name="lower_body">下半身</string>
+    <string name="chest_body">胸部</string>
+    <string name="core_body">核心</string>
+
+    <string name="connect_ble_warning">您沒有连接Homegym设备</string>
+    <string name="connect_ble_warning1">现在连接您的设备开始专业的健身</string>
+    <string name="connect_ble_connect">连接</string>
+
+    <string name="scanning">扫描中...</string>
+    <string name="connecting">连接中...</string>
+    <string name="disconnecting">正在断开...</string>
+    <string name="dev_conn_number">设备连接数量：</string>
+</resources>

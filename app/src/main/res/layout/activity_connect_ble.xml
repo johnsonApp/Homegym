@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="@color/colorBlack"
+    tools:context=".ConnectBleActivity">
+
+    <ImageView
+        android:id="@+id/close_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="54dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/close_icon" />
+
+    <ImageView
+        android:id="@+id/connect_status_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/connect_ble_warning"
+        />
+
+    <TextView
+        android:id="@+id/connect_lable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:textSize="36sp"
+        android:textColor="@color/colorWhite"
+        android:text="@string/connect_ble_warning"
+        />
+
+    <LinearLayout
+        android:id="@+id/connect_lable2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/heart"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:layout_marginTop="6dp"
+            android:textSize="36sp"
+            android:text="@string/connect_ble_warning1"
+            />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_connect_ble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorButtonBackground"
+        android:text="@string/connect_ble_connect"
+        android:textColor="@color/colorWhite"
+        android:layout_marginTop="6dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:textSize="24sp"
+        />
+</LinearLayout>

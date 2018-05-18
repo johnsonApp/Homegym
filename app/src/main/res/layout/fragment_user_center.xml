@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserCenterFragment"
+    android:background="@android:color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/bmi"
+            android:layout_width="180dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="50dp"
+            android:gravity="center"
+            android:drawableStart="@drawable/heart_green"
+            android:textColor="#ff7ed321"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:text="BMI:22.5"/>
+
+        <RelativeLayout
+            android:id="@+id/plan_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/bmi"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:background="#ffededed">
+
+            <TextView
+                android:id="@+id/plan_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="50dp"
+                android:textColor="@android:color/black"
+                android:textSize="26sp"
+                android:text="You don't have a training plan yet"/>
+
+            <TextView
+                android:id="@+id/plan_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="50dp"
+                android:textColor="#ffff2e51"
+                android:textSize="26sp"
+                android:text="+ Add Plan"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/plan_layout"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="10dp"
+            android:textColor="#ff8e8e8e"
+            android:textSize="24sp"
+            android:text="28天 突破训练"/>
+
+        <TextView
+            android:id="@+id/train_part"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/tips"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="5dp"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:text="胸部, 腹部核心 , 二头肌"/>
+
+        <RelativeLayout
+            android:id="@+id/train_time"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/train_part"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/time_min"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:drawableStart="@drawable/time_black"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:text="45 min"/>
+
+            <TextView
+                android:id="@+id/calendar"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:drawableStart="@drawable/calendar_black"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:text="04/20"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/train_time"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="10dp"
+            android:background="#ffededed"/>
+
+        <TextView
+            android:id="@+id/sport_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/line"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@android:color/black"
+            android:textSize="26sp"
+            android:text="一周运动曲线"/>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/line_chart"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@id/sport_line"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginTop="5dp">
+
+        </com.github.mikephil.charting.charts.LineChart>
+
+    </RelativeLayout>
+
+</FrameLayout>

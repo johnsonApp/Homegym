@@ -25,21 +25,34 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jht.homegym.ble.MultipleBleService;
 import com.jht.homegym.ble.Constants;
+import com.jht.homegym.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 
 public class ConnectBleActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = "ConnectBleActivity";
+
+    private static final int RETRY_TIME = 1;
+    private static final String THINGYNAME = "Thingy";
+    private static final String HOMEGYEMNAME = "HomeGYM Console";
+    private static final String ADDRESS = "address";
+    private static final String DEVICE_NAME ="name";
+    private static final String IS_CONNECTED ="isConnect";
+
+    private UUID[] ThingyUUID = {Utils.THINGY_BASE_UUID};
+    private UUID[] HomegymUUID = {Utils.HOMEGYM_BASE_UUID};
 
     private ImageView mClosePage;
     private Button mConnect;
@@ -57,11 +70,18 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
     private List<Map<String, Object>> mDeviceList;
     private String mConnDeviceName;
     private String mConnDeviceAddress;
+    private LinearLayout mConnectLable2;
+    private boolean mIsConnected = false;
+    private boolean mIsHomegymScan = false;
+    private boolean mIsThingyScan = false;
+
+    private int mRetryTime = 0;
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mBleService = ((MultipleBleService.LocalBinder) service).getService();
+            mIsBind = true;
             if (mBleService != null) mHandler.sendEmptyMessage(SERVICE_BIND);
             if (mBleService.initialize()) {
                 if (mBleService.enableBluetooth(true)) {
@@ -102,32 +122,54 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Constants.ACTION_BLUETOOTH_DEVICE)) {
-                String tmpDevName = intent.getStringExtra("name");
-                String tmpDevAddress = intent.getStringExtra("address");
+                String tmpDevName = intent.getStringExtra(DEVICE_NAME);
+                String tmpDevAddress = intent.getStringExtra(ADDRESS);
                 Log.i(TAG, "name: " + tmpDevName + ", address: " + tmpDevAddress);
                 HashMap<String, Object> deviceMap = new HashMap<>();
-                deviceMap.put("name", tmpDevName);
-                deviceMap.put("address", tmpDevAddress);
-                deviceMap.put("isConnect", false);
+                deviceMap.put(DEVICE_NAME, tmpDevName);
+                deviceMap.put(ADDRESS, tmpDevAddress);
+                deviceMap.put(IS_CONNECTED, false);
                 mDeviceList.add(deviceMap);
                 //mDeviceAdapter.notifyDataSetChanged();
             } else if (intent.getAction().equals(Constants.ACTION_GATT_CONNECTED)) {
                 Log.i(TAG, "onReceive: CONNECTED: " + mBleService.getConnectDevices().size());
+                if(mBleService.getConnectDevices().size() > 0){
+                    mIsConnected = true;
+                }
                 mHandler.sendEmptyMessage(CONNECT_CHANGE);
                 dismissDialog();
+                updateUI();
             } else if (intent.getAction().equals(Constants.ACTION_GATT_DISCONNECTED)) {
                 Log.i(TAG, "onReceive: DISCONNECTED: " + mBleService.getConnectDevices().size());
+                if(mBleService.getConnectDevices().size() == 0){
+                    mIsConnected = false;
+                }
                 mHandler.sendEmptyMessage(CONNECT_CHANGE);
                 dismissDialog();
+                updateUI();
             } else if (intent.getAction().equals(Constants.ACTION_SCAN_FINISHED)) {
                 //btn_scanBle.setEnabled(true);
                 Log.i(TAG,"ACTION_SCAN_FINISHED");
-                mConnect.setEnabled(true);
-                dismissDialog();
-                connectDevice();
+                isScanDevice();
+                Log.d(TAG," mIsThingyScan " + mIsThingyScan + " mIsHomegymScan " + mIsHomegymScan);
+                if((mIsHomegymScan && mIsThingyScan) || mRetryTime >= RETRY_TIME) {
+                    mConnect.setEnabled(true);
+                    dismissDialog();
+                    connectDevice();
+                }else {
+                    setScan(true);
+                    mRetryTime ++;
+                }
             }
         }
     };
+
+    private void updateUI(){
+        mConnectLable2.setVisibility(View.INVISIBLE);
+        if(mIsConnected){
+            mConnect.setText("開始 FREE MODE");
+        }
+    }
 
     private static IntentFilter makeIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
@@ -151,6 +193,7 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
         mConnect.setOnClickListener(this);
         mConnectLable = findViewById(R.id.connect_lable);
 
+        mConnectLable2 = findViewById(R.id.connect_lable2);
 
         mDeviceList = new ArrayList<Map<String, Object>>();
         registerReceiver(mBleReceiver, makeIntentFilter());
@@ -196,10 +239,16 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
                 finish();
                 break;
             case R.id.button_connect_ble:
-                if(mBleService.isScanning()){
-                    mBleService.scanLeDevice(false);
+                if(mIsConnected) {
+                    startActivity(new Intent(this, FreeModeSelectActivity.class));
+                    finish();
+                }else {
+                    mRetryTime = 0;
+                    if (mBleService.isScanning()) {
+                        mBleService.scanLeDevice(false);
+                    }
+                    setScan(true);
                 }
-                setScan(true);
                 //connectDevice();
                 break;
         }
@@ -207,22 +256,22 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
 
     private void connectDevice() {
         showDialog(getResources().getString(R.string.connecting));
-        int find = 0;
-        for (int i = 0; i < mDeviceList.size(); i++) {
-            HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
-            String name = (String)devMap.get("name");
-            if (null != name && (name.equals("QN-Scale") || name.equals("CSC Sensor"))) {
-                Log.i(TAG,"connectDevice " + devMap.get("address").toString());
-                mBleService.connect(devMap.get("address").toString());
-                find ++;
-            }
-        }
-        Log.i(TAG,"connectDevice " + find);
-        if(0 == find){
+        int size = mDeviceList.size();
+        if(0 == size){
             dismissDialog();
             Log.i(TAG,"connectDevice make Toast");
             Toast.makeText(this,"Can not find any device ,please retry",Toast.LENGTH_LONG);
+            return;
         }
+        for (int i = 0; i < size; i++) {
+            HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
+            //String name = (String)devMap.get("name");
+            //if (null != name && (name.equals("QN-Scale") || name.equals("CSC Sensor"))) {
+                Log.i(TAG,"connectDevice " + devMap.get(ADDRESS).toString());
+                mBleService.connect(devMap.get(ADDRESS).toString());
+            //}
+        }
+        Log.i(TAG,"connectDevice " + size);
     }
     private void setBleServiceListener() {
         mBleService.setOnConnectListener(new MultipleBleService.OnConnectionStateChangeListener() {
@@ -231,8 +280,8 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
                 if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                     for (int i = 0; i < mDeviceList.size(); i++) {
                         HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
-                        if (devMap.get("address").toString().equals(gatt.getDevice().getAddress())) {
-                            ((HashMap) mDeviceList.get(i)).put("isConnect", false);
+                        if (devMap.get(ADDRESS).toString().equals(gatt.getDevice().getAddress())) {
+                            ((HashMap) mDeviceList.get(i)).put(IS_CONNECTED, false);
                             return;
                         }
                     }
@@ -241,8 +290,8 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
                 } else if (newState == BluetoothProfile.STATE_CONNECTED) {
                     for (int i = 0; i < mDeviceList.size(); i++) {
                         HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
-                        if (devMap.get("address").toString().equals(gatt.getDevice().getAddress())) {
-                            ((HashMap) mDeviceList.get(i)).put("isConnect", true);
+                        if (devMap.get(ADDRESS).toString().equals(gatt.getDevice().getAddress())) {
+                            ((HashMap) mDeviceList.get(i)).put(IS_CONNECTED, true);
                             return;
                         }
                     }
@@ -254,6 +303,7 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
         mBleService.setOnServicesDiscoveredListener(new MultipleBleService.OnServicesDiscoveredListener() {
             @Override
             public void onServicesDiscovered(BluetoothGatt gatt, int status){
+                Log.d(TAG,"onServicesDiscovered");
 
             }
         });
@@ -310,9 +360,28 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void setScan(boolean scan){
-        showDialog(getResources().getString(R.string.scanning));
-        mBleService.scanLeDevice(scan);
+        if(null == mProgressDialog || !mProgressDialog.isShowing()) {
+            showDialog(getResources().getString(R.string.scanning));
+        }
+        if(!mIsHomegymScan){
+            mBleService.scanLeDevice(scan,HomegymUUID);
+        }else if(!mIsThingyScan){
+            mBleService.scanLeDevice(scan, ThingyUUID);
+        }
         mConnect.setEnabled(!scan);
+    }
+
+    private void isScanDevice(){
+        int size = mDeviceList.size();
+        for (int i = 0; i < size; i++) {
+            HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
+            String name = (String )(devMap.get(DEVICE_NAME));
+            if(name.equals(HOMEGYEMNAME)){
+                mIsHomegymScan = true;
+            }else if(name.equals(THINGYNAME)){
+                mIsThingyScan = true;
+            }
+        }
     }
 
     private ProgressDialog mProgressDialog;

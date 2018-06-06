@@ -75,7 +75,7 @@ public class MainPageFragment extends Fragment {
         free_mode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), FreeModeSelectActivity.class));
+                startActivity(new Intent(getContext(), ConnectBleActivity.class/*FreeModeSelectActivity.class*/));
             }
         });
         return view;

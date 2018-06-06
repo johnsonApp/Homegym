@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jht.homegym.ble.BleActivity;
 import com.jht.homegym.ble.MultipleBleService;
 import com.jht.homegym.ble.Constants;
 import com.jht.homegym.utils.Utils;
@@ -40,37 +41,34 @@ import java.util.Map;
 import java.util.UUID;
 
 
-public class ConnectBleActivity extends AppCompatActivity implements View.OnClickListener{
+public class ConnectBleActivity extends BleActivity implements View.OnClickListener{
 
     private static final String TAG = "ConnectBleActivity";
 
-    private static final int RETRY_TIME = 1;
+/*    private static final int RETRY_TIME = 3;//3;
     private static final String THINGYNAME = "Thingy";
     private static final String HOMEGYEMNAME = "HomeGYM Console";
     private static final String ADDRESS = "address";
     private static final String DEVICE_NAME ="name";
     private static final String IS_CONNECTED ="isConnect";
 
-    private UUID[] ThingyUUID = {Utils.THINGY_BASE_UUID};
+    private UUID[] AccessoryUUID = {Utils.THINGY_BASE_UUID};
     private UUID[] HomegymUUID = {Utils.HOMEGYM_BASE_UUID};
-
+*/
     private ImageView mClosePage;
     private Button mConnect;
     private TextView mConnectLable;
+    private LinearLayout mConnectLable2;
 
     //Constant
-    public static final int SERVICE_BIND = 1;
+/*    public static final int SERVICE_BIND = 1;
     public static final int CONNECT_CHANGE = 2;
-    public static final int REQUEST_CODE_ACCESS_COARSE_LOCATION = 1;
+
 
     //Member fields
     private boolean mIsBind;
     private MultipleBleService mBleService;
-    //private CommonAdapter<Map<String, Object>> deviceAdapter;
     private List<Map<String, Object>> mDeviceList;
-    private String mConnDeviceName;
-    private String mConnDeviceAddress;
-    private LinearLayout mConnectLable2;
     private boolean mIsConnected = false;
     private boolean mIsHomegymScan = false;
     private boolean mIsThingyScan = false;
@@ -85,7 +83,9 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
             if (mBleService != null) mHandler.sendEmptyMessage(SERVICE_BIND);
             if (mBleService.initialize()) {
                 if (mBleService.enableBluetooth(true)) {
-                    handleVersionPermission();
+                    if(Utils.handleVersionPermission(ConnectBleActivity.this)){
+                        setScan(true);
+                    }
                     Toast.makeText(ConnectBleActivity.this, "Bluetooth was opened", Toast.LENGTH_SHORT).show();
                 }
             } else {
@@ -152,7 +152,7 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
                 Log.i(TAG,"ACTION_SCAN_FINISHED");
                 isScanDevice();
                 Log.d(TAG," mIsThingyScan " + mIsThingyScan + " mIsHomegymScan " + mIsHomegymScan);
-                if((mIsHomegymScan && mIsThingyScan) || mRetryTime >= RETRY_TIME) {
+                if((mIsHomegymScan && mIsThingyScan) || mRetryTime >= RETRY_TIME || mDeviceList.size() == 2) {
                     mConnect.setEnabled(true);
                     dismissDialog();
                     connectDevice();
@@ -162,23 +162,31 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         }
-    };
+    };*/
 
-    private void updateUI(){
-        mConnectLable2.setVisibility(View.INVISIBLE);
-        if(mIsConnected){
-            mConnect.setText("開始 FREE MODE");
+    public void updateUI(int status){
+        switch (status){
+            case Constants.STATE_CONNECTED:
+            case  Constants.STATE_DISCONNECTED:
+                mConnectLable2.setVisibility(View.INVISIBLE);
+                if (mIsConnected) {
+                    mConnect.setText("開始 FREE MODE");
+                }
+                break;
+            case Constants.STATE_SCAN_FINISH:
+                mConnect.setEnabled(true);
+                break;
         }
     }
 
-    private static IntentFilter makeIntentFilter() {
+/*    private static IntentFilter makeIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Constants.ACTION_BLUETOOTH_DEVICE);
         intentFilter.addAction(Constants.ACTION_GATT_CONNECTED);
         intentFilter.addAction(Constants.ACTION_GATT_DISCONNECTED);
         intentFilter.addAction(Constants.ACTION_SCAN_FINISHED);
         return intentFilter;
-    }
+    }*/
 
 
 
@@ -195,13 +203,13 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
 
         mConnectLable2 = findViewById(R.id.connect_lable2);
 
-        mDeviceList = new ArrayList<Map<String, Object>>();
+        /*mDeviceList = new ArrayList<Map<String, Object>>();
         registerReceiver(mBleReceiver, makeIntentFilter());
-        doBindService();
+        doBindService();*/
     }
 
-    @Override
-    public void onBackPressed() {
+
+/*    public void onBackPressed() {
         if (mBleService.isScanning()) {
             mBleService.scanLeDevice(false);
             return;
@@ -230,7 +238,7 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
             mBleService = null;
             mIsBind = false;
         }
-    }
+    }*/
 
     @Override
     public void onClick(View view) {
@@ -244,17 +252,14 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
                     finish();
                 }else {
                     mRetryTime = 0;
-                    if (mBleService.isScanning()) {
-                        mBleService.scanLeDevice(false);
-                    }
+                    stopScan();
                     setScan(true);
                 }
-                //connectDevice();
                 break;
         }
     }
 
-    private void connectDevice() {
+/*    private void connectDevice() {
         showDialog(getResources().getString(R.string.connecting));
         int size = mDeviceList.size();
         if(0 == size){
@@ -265,11 +270,10 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
         }
         for (int i = 0; i < size; i++) {
             HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
-            //String name = (String)devMap.get("name");
-            //if (null != name && (name.equals("QN-Scale") || name.equals("CSC Sensor"))) {
-                Log.i(TAG,"connectDevice " + devMap.get(ADDRESS).toString());
+            Log.i(TAG,"connectDevice " + devMap.get(ADDRESS).toString());
+            if(!(boolean)devMap.get(IS_CONNECTED)) {
                 mBleService.connect(devMap.get(ADDRESS).toString());
-            //}
+            }
         }
         Log.i(TAG,"connectDevice " + size);
     }
@@ -300,64 +304,8 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         });
-        mBleService.setOnServicesDiscoveredListener(new MultipleBleService.OnServicesDiscoveredListener() {
-            @Override
-            public void onServicesDiscovered(BluetoothGatt gatt, int status){
-                Log.d(TAG,"onServicesDiscovered");
-
-            }
-        });
-        mBleService.setOnDataAvailableListener(new MultipleBleService.OnDataAvailableListener() {
-            @Override
-            public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-
-            }
-
-            @Override
-            public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-
-            }
-
-            @Override
-            public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-
-            }
-        });
     }
 
-    private void handleVersionPermission() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            Log.i(TAG, "onCreate: checkSelfPermission");
-
-            int checkSelfPermission = ContextCompat.checkSelfPermission(ConnectBleActivity.this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION);
-            Log.i(TAG, "handleVersionPermission: checkSelfPermission = " + checkSelfPermission);
-            if (checkSelfPermission != PackageManager.PERMISSION_GRANTED) {
-                Log.i(TAG, "onCreate: Android 6.0 动态申请权限");
-
-                boolean showRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(ConnectBleActivity.this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION);
-                Log.i(TAG, "handleVersionPermission: showRequestPermissionRationale = " + showRequestPermissionRationale);
-                if (showRequestPermissionRationale) {
-                    Log.i(TAG, "*********onCreate: shouldShowRequestPermissionRationale**********");
-                    Toast.makeText(ConnectBleActivity.this, "只有允许访问位置才能搜索到蓝牙设备", Toast.LENGTH_SHORT).show();
-                }
-                ActivityCompat.requestPermissions(ConnectBleActivity.this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        REQUEST_CODE_ACCESS_COARSE_LOCATION);
-            } else {
-                Log.i(TAG, "handleVersionPermission: scanning...");
-                //showDialog(getResources().getString(R.string.scanning));
-                setScan(true);
-                //mBleService.scanLeDevice(true);
-            }
-        } else {
-            Log.i(TAG, "handleVersionPermission: scanning...");
-            //showDialog(getResources().getString(R.string.scanning));
-            setScan(true);
-            //mBleService.scanLeDevice(true);
-        }
-    }
 
     private void setScan(boolean scan){
         if(null == mProgressDialog || !mProgressDialog.isShowing()) {
@@ -366,7 +314,7 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
         if(!mIsHomegymScan){
             mBleService.scanLeDevice(scan,HomegymUUID);
         }else if(!mIsThingyScan){
-            mBleService.scanLeDevice(scan, ThingyUUID);
+            mBleService.scanLeDevice(scan, AccessoryUUID);
         }
         mConnect.setEnabled(!scan);
     }
@@ -398,5 +346,5 @@ public class ConnectBleActivity extends AppCompatActivity implements View.OnClic
         if (mProgressDialog == null) return;
         mProgressDialog.dismiss();
         mProgressDialog = null;
-    }
+    }*/
 }

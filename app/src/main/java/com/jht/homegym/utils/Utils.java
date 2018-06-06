@@ -38,19 +38,25 @@
 
 package com.jht.homegym.utils;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.ParcelUuid;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.util.Log;
 import android.util.SparseArray;
 import android.webkit.URLUtil;
 import android.widget.Toast;
+
+import com.jht.homegym.ConnectBleActivity;
 
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
@@ -73,6 +79,10 @@ public class Utils {
     public static final UUID HOMEGYM_WRITE_UUID                                                 = UUID.fromString("43e70002-c92b-4ac4-834f-38981f04dcfa");
     public static final UUID HOMEGYM_READ_UUID                                                  = UUID.fromString("43e70003-c92b-4ac4-834f-38981f04dcfa");
 
+    public static final UUID ACCESSORY_BASE_UUID                                                = UUID.fromString("54f80001-c92b-4ac4-834f-38981f04dcfa");
+    public static final UUID ACCESSORY_WRITE_UUID                                               = UUID.fromString("54f80002-c92b-4ac4-834f-38981f04dcfa");
+    public static final UUID ACCESSORY_READ_UUID                                                = UUID.fromString("54f80003-c92b-4ac4-834f-38981f04dcfa");
+    public static final UUID ACCESSORY_SENSOR_UUID                                              = UUID.fromString("54f80004-c92b-4ac4-834f-38981f04dcfa");
 
     public static final UUID THINGY_BASE_UUID                                                   = new UUID(0xEF6801009B354933L, 0x9B1052FFA9740042L);
     public static final UUID THINGY_CONFIGURATION_SERVICE                                       = new UUID(0xEF6801009B354933L, 0x9B1052FFA9740042L);
@@ -355,6 +365,8 @@ public class Utils {
     public static final int SPEAKER_STATUS_PACKET_DISREGARDED                                   = 0x10;
     public static final int SPEAKER_STATUS_INVALID_COMMAND                                      = 0x11;
 
+
+    public static final int REQUEST_CODE_ACCESS_COARSE_LOCATION = 1;
 
     /**
      * URI Scheme maps a byte code into the scheme and an optional scheme specific prefix.
@@ -714,5 +726,43 @@ public class Utils {
                 }
             }
         }
+    }
+
+    public static boolean handleVersionPermission(Context context) {
+        if(context instanceof Activity) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                Log.i(TAG, "onCreate: checkSelfPermission");
+
+                int checkSelfPermission = ContextCompat.checkSelfPermission(context,
+                        Manifest.permission.ACCESS_COARSE_LOCATION);
+                Log.i(TAG, "handleVersionPermission: checkSelfPermission = " + checkSelfPermission);
+                if (checkSelfPermission != PackageManager.PERMISSION_GRANTED) {
+                    Log.i(TAG, "onCreate: Android 6.0 动态申请权限");
+
+                    boolean showRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,
+                            Manifest.permission.ACCESS_COARSE_LOCATION);
+                    Log.i(TAG, "handleVersionPermission: showRequestPermissionRationale = " + showRequestPermissionRationale);
+                    if (showRequestPermissionRationale) {
+                        Log.i(TAG, "*********onCreate: shouldShowRequestPermissionRationale**********");
+                        Toast.makeText(context, "只有允许访问位置才能搜索到蓝牙设备", Toast.LENGTH_SHORT).show();
+                    }
+                    ActivityCompat.requestPermissions((Activity) context,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                            REQUEST_CODE_ACCESS_COARSE_LOCATION);
+                    return false;
+                } else {
+                    Log.i(TAG, "handleVersionPermission: scanning...");
+                    //showDialog(getResources().getString(R.string.scanning));
+                    return true;
+                    //mBleService.scanLeDevice(true);
+                }
+            } else {
+                Log.i(TAG, "handleVersionPermission: scanning...");
+                //showDialog(getResources().getString(R.string.scanning));
+                return true;
+                //mBleService.scanLeDevice(true);
+            }
+        }
+        return  false;
     }
 }

@@ -86,16 +86,11 @@ public class TrainingActivity extends Activity {
     private AccessoryExercise mDumbbellExercise;
     private int mDumbbellExerciseCounter = 0;
 
-    private BluetoothGattCharacteristic mMotionConfigurationCharacteristic;
-    private BluetoothGattCharacteristic mTapCharacteristic;
-    private BluetoothGattCharacteristic mOrientationCharacteristic;
-    private BluetoothGattCharacteristic mQuaternionCharacteristic;
-    private BluetoothGattCharacteristic mPedometerCharacteristic;
+    private BluetoothGattCharacteristic mAccessoryReadCharacteristic;
+    private BluetoothGattCharacteristic mAccessoryWriteCharacteristic;
+    private BluetoothGattCharacteristic mAccessorySensorCharacteristic;
     private BluetoothGattCharacteristic mRawDataCharacteristic;
-    private BluetoothGattCharacteristic mEulerCharacteristic;
-    private BluetoothGattCharacteristic mRotationMatrixCharacteristic;
-    private BluetoothGattCharacteristic mHeadingCharacteristic;
-    private BluetoothGattCharacteristic mGravityVectorCharacteristic;
+
 
     private BluetoothGattCharacteristic mHomegymReadCharacteristic;
     private BluetoothGattCharacteristic mHomegymWriteCharacteristic;
@@ -174,7 +169,7 @@ public class TrainingActivity extends Activity {
 
         mTrainingTime = (TextView) findViewById(R.id.time_value);
         startTime = SystemClock.elapsedRealtime();
-        /*TimerTask mTimerTask = new TimerTask() {
+        TimerTask mTimerTask = new TimerTask() {
             @Override
             public void run() {
                 long time = (SystemClock.elapsedRealtime()- startTime) / 1000;
@@ -185,7 +180,7 @@ public class TrainingActivity extends Activity {
                 mHandler.sendMessage(mHandler.obtainMessage(TIME_CHANGE, timeFormat));
             }
         };
-        mTimer.schedule(mTimerTask, 1000, 1000);*/
+        mTimer.schedule(mTimerTask, 1000, 1000);
         mResistanceValue = (TextView) findViewById(R.id.weight_value);
         mResistanceBar = (SeekBar) findViewById(R.id.resistance_bar);
         mResistanceBar.setOnSeekBarChangeListener(resistanceListener);
@@ -299,16 +294,30 @@ public class TrainingActivity extends Activity {
                 }
                 Log.v(TAG, "Service discovery completed");
                 final String address = gatt.getDevice().getAddress();
-                BluetoothGattService motionGattService = gatt.getService(Utils.THINGY_MOTION_SERVICE);
-                if (motionGattService != null) {
+                BluetoothGattService accessoryGattService = gatt.getService(Utils.THINGY_MOTION_SERVICE);
+                if (accessoryGattService != null) {
                     mAccessoryAddress = address;
+                    Log.d(TAG,"find accessory service");
+                    mAccessoryReadCharacteristic = accessoryGattService.getCharacteristic(Utils.ACCESSORY_READ_UUID);
+                    mAccessoryWriteCharacteristic = accessoryGattService.getCharacteristic(Utils.ACCESSORY_WRITE_UUID);
+                    mAccessorySensorCharacteristic = accessoryGattService.getCharacteristic(Utils.ACCESSORY_SENSOR_UUID);
+
+                    if(null != mAccessoryReadCharacteristic) {
+                        Log.d(TAG,"find accessory  read service");
+                    }
+                    if(null != mAccessoryWriteCharacteristic) {
+                        Log.d(TAG,"find accessory  write service");
+                    }
+                    if(null != mAccessorySensorCharacteristic) {
+                        Log.d(TAG, "find accessory  sensor service");
+                    }
                     /*mMotionConfigurationCharacteristic = motionGattService.getCharacteristic(ThingyUtils.THINGY_MOTION_CONFIGURATION_CHARACTERISTIC);
                     mTapCharacteristic = motionGattService.getCharacteristic(ThingyUtils.TAP_CHARACTERISTIC);
                     mOrientationCharacteristic = motionGattService.getCharacteristic(ThingyUtils.ORIENTATION_CHARACTERISTIC);
                     mQuaternionCharacteristic = motionGattService.getCharacteristic(ThingyUtils.QUATERNION_CHARACTERISTIC);
-                    mPedometerCharacteristic = motionGattService.getCharacteristic(ThingyUtils.PEDOMETER_CHARACTERISTIC);*/
+                    mPedometerCharacteristic = motionGattService.getCharacteristic(ThingyUtils.PEDOMETER_CHARACTERISTIC);
                     mRawDataCharacteristic = motionGattService.getCharacteristic(Utils.RAW_DATA_CHARACTERISTIC);
-                    /*mEulerCharacteristic = motionGattService.getCharacteristic(ThingyUtils.EULER_CHARACTERISTIC);
+                    mEulerCharacteristic = motionGattService.getCharacteristic(ThingyUtils.EULER_CHARACTERISTIC);
                     mRotationMatrixCharacteristic = motionGattService.getCharacteristic(ThingyUtils.ROTATION_MATRIX_CHARACTERISTIC);
                     mHeadingCharacteristic = motionGattService.getCharacteristic(ThingyUtils.HEADING_CHARACTERISTIC);
                     mGravityVectorCharacteristic = motionGattService.getCharacteristic(ThingyUtils.GRAVITY_VECTOR_CHARACTERISTIC);*/
@@ -329,8 +338,8 @@ public class TrainingActivity extends Activity {
                     }
                     if(null != mHomegymWriteCharacteristic) {
                         Log.d(TAG,"find mHomegymWriteCharacteristic");
-                        //byte[] data = BLECommand.getParameter(BLECommand.GET_PARAMETER_BATTERY);
-                        byte[] data = BLECommand.getParameter(BLECommand.GET_PARAMETER_PROGRAM_DATA);
+                        byte[] data = BLECommand.getParameter(BLECommand.GET_PARAMETER_BATTERY);
+                        //byte[] data = BLECommand.getParameter(BLECommand.GET_PARAMETER_PROGRAM_DATA);
                         logData(data);
                         boolean result = mBleService.writeCharacteristic(address, Utils.HOMEGYM_BASE_UUID,
                         Utils.HOMEGYM_WRITE_UUID, data);
@@ -444,8 +453,8 @@ public class TrainingActivity extends Activity {
             Log.d(TAG,"discoveryServices " + length);
             for(int i = 0; i < length; i++){
                 BluetoothDevice device = mConnectedDevices.get(i);
+                Log.d(TAG,"discoveryServices address " + device.getAddress());
                 boolean result = mBleService.discoverServices(device.getAddress());
-                Log.d(TAG,"discoveryServices result " + result);
             }
         }
 

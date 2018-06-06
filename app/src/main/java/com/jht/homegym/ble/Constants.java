@@ -22,6 +22,7 @@ public interface Constants {
     int STATE_CONNECTING = 1;
     int STATE_CONNECTED = 2;
     int STATE_DISCONNECTING = 3;
+    int STATE_SCAN_FINISH = 4;
 
     //Action
     String ACTION_GATT_DISCONNECTED = "com.jht.homegym.ble.ACTION_GATT_DISCONNECTED";

@@ -44,20 +44,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Created by JunkChen on 2015/9/11 0009.
- */
 //@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class MultipleBleService extends Service implements Constants, BleListener {
     //Debug
-    private static final String TAG = MultipleBleService.class.getName();
+    private static final String TAG = "MultipleBleService";
 
     //Member fields
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
     private Map<String, BluetoothGatt> mBluetoothGattMap;
     private List<BluetoothDevice> mScanLeDeviceList = new ArrayList<>();
-    private boolean isScanning;
+    private boolean mIsScanning;
     private List<String> mConnectedAddressList;//Already connected remote device address
     //Stop scanning after 10 seconds.
     private static final long SCAN_PERIOD = 10 * 1000;
@@ -73,31 +70,41 @@ public class MultipleBleService extends Service implements Constants, BleListene
     private final IBinder mBinder = new LocalBinder();
     private static MultipleBleService instance = null;
 
-    public MultipleBleService() {
+    /*public MultipleBleService() {
         instance = this;
         Log.d(TAG, "BleService initialized.");
+    }*/
+
+    @Override
+    public void onCreate(){
+        instance = this;
+        Log.d(TAG,"onCreate BleService initialized.");
     }
 
     public static MultipleBleService getInstance() {
-        if (instance == null) throw new NullPointerException("MultipleBleService is not bind.");
         return instance;
     }
 
     @Override
     public IBinder onBind(Intent intent) {
+        Log.d(TAG,"onBind " + mBinder);
         return mBinder;
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        close();
-        instance = null;
         return super.onUnbind(intent);
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        close();
+        instance = null;
+    }
     public class LocalBinder extends Binder {
         public MultipleBleService getService() {
-            return MultipleBleService.this;
+            return MultipleBleService.getInstance();
         }
     }
 
@@ -168,37 +175,41 @@ public class MultipleBleService extends Service implements Constants, BleListene
      * @param enable     If true, start scan ble device.False stop scan.
      * @param scanPeriod scan ble period time
      */
-    public void scanLeDevice(final boolean enable, long scanPeriod) {
+    public void scanLeDevice(final boolean enable, long scanPeriod,UUID[] uuids) {
         if (enable) {
-            if (isScanning) return;
+            if (mIsScanning) return;
             //Stop scanning after a predefined scan period.
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    isScanning = false;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mIsScanning = false;
+                    /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         mBluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
-                    } else {
+                    } else {*/
                         mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                    }
+                    //}
                     broadcastUpdate(ACTION_SCAN_FINISHED);
                     mScanLeDeviceList.clear();
                 }
             }, scanPeriod);
             mScanLeDeviceList.clear();
-            isScanning = true;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mIsScanning = true;
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mBluetoothAdapter.getBluetoothLeScanner().startScan(mScanCallback);
-            } else {
-                mBluetoothAdapter.startLeScan(mLeScanCallback);
-            }
+            } else {*/
+                if(null == uuids) {
+                    mBluetoothAdapter.startLeScan(mLeScanCallback);
+                }else {
+                    mBluetoothAdapter.startLeScan(uuids, mLeScanCallback);
+                }
+            //}
         } else {
-            isScanning = false;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mIsScanning = false;
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mBluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
-            } else {
+            } else {*/
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            }
+            //}
             broadcastUpdate(ACTION_SCAN_FINISHED);
             mScanLeDeviceList.clear();
         }
@@ -210,16 +221,19 @@ public class MultipleBleService extends Service implements Constants, BleListene
      * @param enable If true, start scan ble device.False stop scan.
      */
     public void scanLeDevice(boolean enable) {
-        this.scanLeDevice(enable, SCAN_PERIOD);
+        this.scanLeDevice(enable, SCAN_PERIOD, null);
     }
 
+    public void scanLeDevice(boolean enable, UUID[] uuids){
+        this.scanLeDevice(enable, SCAN_PERIOD, uuids);
+    }
     /**
      * If Ble is scaning return true, if not return false.
      *
      * @return ble whether scanning
      */
     public boolean isScanning() {
-        return isScanning;
+        return mIsScanning;
     }
 
     /**
@@ -230,7 +244,7 @@ public class MultipleBleService extends Service implements Constants, BleListene
      * is reported asynchronously through the BluetoothGattCallback#onConnectionStateChange.
      */
     public boolean connect(final String address) {
-        if (isScanning) scanLeDevice(false);
+        if (mIsScanning) scanLeDevice(false);
         if (getConnectDevices().size() > MAX_CONNECT_NUM) return false;
         if (mConnectedAddressList == null) {
             mConnectedAddressList = new ArrayList<>();
@@ -296,6 +310,7 @@ public class MultipleBleService extends Service implements Constants, BleListene
      * @return true, if the remote service discovery has been started
      */
     public boolean discoverServices(String address) {
+        Log.d(TAG,"discoverServices  " + (null == mBluetoothGattMap));
         if (null == mBluetoothGattMap || mBluetoothGattMap.get(address) == null) return false;
         return mBluetoothGattMap.get(address).discoverServices();
     }
@@ -413,6 +428,21 @@ public class MultipleBleService extends Service implements Constants, BleListene
         return false;
     }
 
+    public boolean writeCharacteristic(String address, UUID serviceUUID,
+                                       UUID characteristicUUID, byte[] value) {
+
+        Log.d(TAG,"writeCharacteristic address " + address);
+        BluetoothGatt bluetoothGatt = mBluetoothGattMap.get(address);
+        if (bluetoothGatt != null) {
+            BluetoothGattService service =
+                    bluetoothGatt.getService(serviceUUID);
+            BluetoothGattCharacteristic characteristic =
+                    service.getCharacteristic(characteristicUUID);
+            characteristic.setValue(value);
+            return bluetoothGatt.writeCharacteristic(characteristic);
+        }
+        return false;
+    }
     /**
      * Enables or disables notification on a give characteristic.
      *
@@ -427,13 +457,19 @@ public class MultipleBleService extends Service implements Constants, BleListene
             Log.w(TAG, "BluetoothAdapter not initialized");
             return;
         }
-        mBluetoothGattMap.get(address).setCharacteristicNotification(characteristic, enabled);
 
-        BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
+        boolean result = mBluetoothGattMap.get(address).setCharacteristicNotification(characteristic, enabled);
+        Log.d(TAG,"setCharacteristicNotification " + enabled + " result " +  result);
+        /*BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
                 UUID.fromString(GattAttributes.DESCRIPTOR_CLIENT_CHARACTERISTIC_CONFIGURATION));
         descriptor.setValue(enabled ? BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE :
                 BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
-        mBluetoothGattMap.get(address).writeDescriptor(descriptor);
+        mBluetoothGattMap.get(address).writeDescriptor(descriptor);*/
+
+        for(BluetoothGattDescriptor dp:characteristic.getDescriptors()){
+            dp.setValue(enabled ? BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE : BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
+            mBluetoothGattMap.get(address).writeDescriptor(dp);
+        }
     }
 
     /**
@@ -549,11 +585,11 @@ public class MultipleBleService extends Service implements Constants, BleListene
      */
     public boolean requestMtu(String address, int mtu) {
         if (mBluetoothGattMap.get(address) == null) return false;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {//Android API level >= 21
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {//Android API level >= 21
             return mBluetoothGattMap.get(address).requestMtu(mtu);
-        } else {
+        } else {*/
             return false;
-        }
+        //}
     }
 
     public List<BluetoothDevice> getConnectDevices() {
@@ -561,6 +597,9 @@ public class MultipleBleService extends Service implements Constants, BleListene
         return mBluetoothManager.getConnectedDevices(BluetoothProfile.GATT);
     }
 
+    public  List<String> getConnectAddress(){
+        return mConnectedAddressList;
+    }
     /**
      * Get connected number of devices at the present.
      *
@@ -592,7 +631,7 @@ public class MultipleBleService extends Service implements Constants, BleListene
     private BluetoothAdapter.LeScanCallback mLeScanCallback;
 
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mScanCallback = new ScanCallback() {
                 @Override
                 public void onScanResult(int callbackType, ScanResult result) {
@@ -609,12 +648,12 @@ public class MultipleBleService extends Service implements Constants, BleListene
                     }
                 }
             };
-        } else {
+        } else {*/
             mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
                 @Override
                 public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                    Log.i(TAG, "device name: " + device.getName() + ", address: " + device.getAddress());
                     if (device == null || mScanLeDeviceList.contains(device)) return;
+                    Log.i(TAG, "device name: " + device.getName() + ", address: " + device.getAddress());
                     mScanLeDeviceList.add(device);
                     if (mOnLeScanListener != null) {
                         mOnLeScanListener.onLeScan(device, rssi, scanRecord);
@@ -622,7 +661,7 @@ public class MultipleBleService extends Service implements Constants, BleListene
                     broadcastUpdate(ACTION_BLUETOOTH_DEVICE, device);
                 }
             };
-        }
+        //}
     }
 
     /**
@@ -652,8 +691,8 @@ public class MultipleBleService extends Service implements Constants, BleListene
                 broadcastUpdate(intentAction, tmpAddress);
                 Log.i(TAG, "Connected to GATT server.");
                 // Attempts to discover services after successful connection.
-                Log.i(TAG, "Attempting to start service discovery:" +
-                        mBluetoothGattMap.get(tmpAddress).discoverServices());
+                /*Log.i(TAG, "Attempting to start service discovery:" +
+                        mBluetoothGattMap.get(tmpAddress).discoverServices());*/
             } else if (newState == BluetoothProfile.STATE_DISCONNECTING) {
                 mConnectedAddressList.remove(tmpAddress);
                 intentAction = ACTION_GATT_DISCONNECTING;
@@ -679,6 +718,7 @@ public class MultipleBleService extends Service implements Constants, BleListene
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic, int status) {
+            Log.w(TAG, "onCharacteristicRead received");
             if (mOnDataAvailableListener != null) {
                 mOnDataAvailableListener.onCharacteristicRead(gatt, characteristic, status);
             }
@@ -687,15 +727,18 @@ public class MultipleBleService extends Service implements Constants, BleListene
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt,
                                           BluetoothGattCharacteristic characteristic, int status) {
-            String address = gatt.getDevice().getAddress();
+            Log.d(TAG,"onCharacteristicWrite ");
+            /*String address = gatt.getDevice().getAddress();
             for (int i = 0; i < characteristic.getValue().length; i++) {
                 Log.i(TAG, "address: " + address + ",Write: " + characteristic.getValue()[i]);
-            }
+            }*/
         }
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
+
+            Log.w(TAG, "onCharacteristicChanged received");
             if (mOnDataAvailableListener != null) {
                 mOnDataAvailableListener.onCharacteristicChanged(gatt, characteristic);
             }

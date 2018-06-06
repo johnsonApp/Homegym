@@ -496,7 +496,8 @@ public class TrainingActivity extends Activity {
                 if(BLECommand.PROGRAM_MODE_CONCOLE == programMode){
                     ConsoleProgramData programData = new ConsoleProgramData(data);
                     if(null != programData) {
-                        mResistanceBar.setProgress(programData.getResistance() * 10);
+                        Log.d(TAG,"updateReplyMessage Resistance " +  programData.getResistance());
+                        mResistanceBar.setProgress(programData.getResistance());
                     }
                 }else if(BLECommand.PROGRAM_MODE_ACCESSORY == programMode) {
                     AccessoryData accessoryData = new AccessoryData(data);

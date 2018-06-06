@@ -6,30 +6,28 @@ public class CrcUtils {
             (byte)0xb9, (byte)0x88, (byte)0xdb, (byte)0xea, 0x7d, 0x4c, 0x1f, 0x2e};
 
 
-    public static byte calcCrc8(byte[] data) {
+    public static int calcCrc8(byte[] data) {
         return calcCrc8(data, 0, data.length, (byte) 0);
     }
 
-    public static byte calcCrc8(byte[] data, int len) {
+    public static int calcCrc8(byte[] data, int len) {
         return calcCrc8(data,0, len);
     }
-    public static byte calcCrc8(byte[] data, int offset, int len) {
+    public static int calcCrc8(byte[] data, int offset, int len) {
         return calcCrc8(data, offset, len, (byte) 0);
     }
 
-    public static byte calcCrc8(byte[] data, int offset, int len, byte preval) {
-        byte ret;
-        byte crcCheckTemp,crcHalf,checkdata = 0;
+    public static int calcCrc8(byte[] data, int offset, int len, byte preval) {
+        short crcCheckTemp,crcHalf,checkdata = 0;
         for (int i = offset; i < (offset + len); i++) {
             crcCheckTemp = data[i];
-            crcHalf = (byte)(checkdata/16);
-            checkdata <<=4;
-            checkdata ^= crcTab[crcHalf ^ (crcCheckTemp/16)];
-            crcHalf = (byte)(checkdata/16);
-            checkdata <<= 4;
-            checkdata ^= crcTab[crcHalf ^ (crcCheckTemp & 0x0f)];
+            crcHalf = (short)((checkdata/16) & 0xff);
+            checkdata = (short)((checkdata  << 4) & 0xff);
+            checkdata = (short)((checkdata ^ crcTab[crcHalf ^ (crcCheckTemp/16)]) & 0xff);
+            crcHalf = (short)((checkdata/16) & 0xff);;
+            checkdata = (short)((checkdata  << 4) & 0xff);
+            checkdata = (short)((checkdata ^ crcTab[crcHalf ^ (crcCheckTemp & 0x0f)]) & 0xff);
         }
-        ret = checkdata;
-        return ret;
+        return checkdata;
     }
 }

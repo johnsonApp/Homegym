@@ -16,9 +16,6 @@
 
 package com.jht.homegym.ble;
 
-/**
- * Created by JunkChen on 2015/9/11 0008.
- */
 public interface Constants {
     //Connection state
     int STATE_DISCONNECTED = 0;

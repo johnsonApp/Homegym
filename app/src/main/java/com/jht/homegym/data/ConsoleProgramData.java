@@ -28,7 +28,6 @@ public class ConsoleProgramData {
             Log.d(TAG,"ConsoleProgramData need valid data");
             return false;
         }
-        byte[] temp = new byte[2];
         mTimeMinute = data[2] & 0xFF;
         mTimeSecond = data[3] & 0xFF;
         mTimes = bytesToInt(data,4,5);

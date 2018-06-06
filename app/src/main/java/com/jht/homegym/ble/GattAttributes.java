@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by JunkChen on 2015/9/11 0011.
  * This class includes a small subset of standard GATT attributes for demonstration(表露) purposes.
  */
 public abstract class GattAttributes {

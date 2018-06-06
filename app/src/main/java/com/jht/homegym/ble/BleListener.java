@@ -7,10 +7,6 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothProfile;
 
-/**
- * Created by JunkChen on 2016/5/21 0021.
- */
-
 interface BleListener {
     interface OnLeScanListener {
         /**

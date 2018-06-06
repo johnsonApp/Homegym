@@ -42,9 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Created by JunkChen on 2015/9/11 0009.
- */
 public class BleService extends Service implements Constants, BleListener {
     //Debug
     private static final String TAG = BleService.class.getName();
@@ -54,7 +51,7 @@ public class BleService extends Service implements Constants, BleListener {
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothGatt mBluetoothGatt;
     private List<BluetoothDevice> mScanLeDeviceList = new ArrayList<>();
-    private boolean isScanning;
+    private boolean mInsSacnning;
     private boolean isConnect;
     private String mBluetoothDeviceAddress;
     private int mConnState = STATE_DISCONNECTED;
@@ -169,12 +166,12 @@ public class BleService extends Service implements Constants, BleListener {
      */
     public void scanLeDevice(final boolean enable, long scanPeriod) {
         if (enable) {
-            if (isScanning) return;
+            if (mInsSacnning) return;
             //Stop scanning after a predefined scan period.
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    isScanning = false;
+                    mInsSacnning = false;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         mBluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
                     } else {
@@ -185,14 +182,14 @@ public class BleService extends Service implements Constants, BleListener {
                 }
             }, scanPeriod);
             mScanLeDeviceList.clear();
-            isScanning = true;
+            mInsSacnning = true;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mBluetoothAdapter.getBluetoothLeScanner().startScan(mScanCallback);
             } else {
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
             }
         } else {
-            isScanning = false;
+            mInsSacnning = false;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mBluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
             } else {
@@ -218,7 +215,7 @@ public class BleService extends Service implements Constants, BleListener {
      * @return ble whether scanning
      */
     public boolean isScanning() {
-        return isScanning;
+        return mInsSacnning;
     }
 
     /**
@@ -229,7 +226,7 @@ public class BleService extends Service implements Constants, BleListener {
      * is reported asynchronously through the BluetoothGattCallback#onConnectionStateChange.
      */
     public boolean connect(final String address) {
-        if (isScanning) scanLeDevice(false);
+        if (mInsSacnning) scanLeDevice(false);
         close();
         if (mBluetoothAdapter == null || address == null) {
             Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");

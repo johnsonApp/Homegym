@@ -62,7 +62,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
-public class ThingyUtils {
+public class Utils {
 
     public static final String TAG                                                              = "THINGY:52";
     public static final String PREFS_INITIAL_SETUP                                              = "INITIAL_SETUP";

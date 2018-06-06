@@ -153,11 +153,11 @@ public class BLECommand {
     public static byte[] unpacketReplyParameter(byte[] data){
         byte[] value = unpacketParameter(data);
         if(null != value && value.length > 1){
-            byte[] result = new byte[value.length - 1];
-            for(int i = 1; i < value.length - 1; i++){
+            /*byte[] result = new byte[value.length - 1];
+            for(int i = 0; i < value.length - 1; i++){
                 result[i] = value[i];
-            }
-            return result;
+            }*/
+            return value;
         }
         return null;
     }

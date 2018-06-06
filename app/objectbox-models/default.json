@@ -1,0 +1,90 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:5758908594850461915",
+      "lastPropertyId": "8:4399013765471861636",
+      "name": "FreeTraining",
+      "properties": [
+        {
+          "id": "1:854521194137296668",
+          "name": "id"
+        },
+        {
+          "id": "2:2735236090878655875",
+          "name": "userId"
+        },
+        {
+          "id": "3:8259525791780168728",
+          "name": "curTime"
+        },
+        {
+          "id": "4:7565743738448361031",
+          "name": "totalTime"
+        },
+        {
+          "id": "5:5959352876044372871",
+          "name": "pullRopeNum"
+        },
+        {
+          "id": "6:4204504343437320804",
+          "name": "skipRopeNum"
+        },
+        {
+          "id": "7:3822887630639569735",
+          "name": "dumbbellNum"
+        },
+        {
+          "id": "8:4399013765471861636",
+          "name": "totalNum"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:4950162328297550155",
+      "lastPropertyId": "6:2677213771349750346",
+      "name": "User",
+      "properties": [
+        {
+          "id": "1:9052345410805356128",
+          "name": "id"
+        },
+        {
+          "id": "2:4462277426898485478",
+          "name": "name"
+        },
+        {
+          "id": "3:4486409625717593960",
+          "name": "age"
+        },
+        {
+          "id": "4:38333618167012213",
+          "name": "weight"
+        },
+        {
+          "id": "5:5452061643846552013",
+          "name": "height"
+        },
+        {
+          "id": "6:2677213771349750346",
+          "name": "bmi"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "2:4950162328297550155",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

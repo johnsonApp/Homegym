@@ -3,22 +3,31 @@
     <string name="unconnect_status">unconnect</string>
     <string name="connected_status">connected</string>
     <string name="homepage_info1">Hello,Joseph</string>
-    <string name="homepage_info2">thigs look very good</string>
+    <string name="homepage_info2">things look very good</string>
     <string name="homepage_info3">keep it!</string>
     <string name="create_plan">Create your plan</string>
     <string name="connect_equipment">CONNECT HOMEGYM</string>
-    <string name="start_training">START</string>
+    <string name="start_training">START TRAINING</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="free_mode">Free mode</string>
-    <string name="select_trainging_body">Please select body which you would like to training</string>
+    <string name="select_training_body">Please select body which you would like to training</string>
+    <string name="select_training_equipment">Please select the training equipment</string>
     <string name="selected_someone">Training your </string>
     <string name="upper_body">upper body</string>
     <string name="lower_body">lower body</string>
     <string name="chest_body">chest</string>
     <string name="core_body">core</string>
+    <string name="dumbbell">dumbbell</string>
+    <string name="homegym">Homegym ring-pull</string>
+    <string name="rope_skipping">rope skipping</string>
+    <string name="hold_on">Keep holding on!</string>
+    <string name="training_time">Training time:</string>
+    <string name="training_count">Total count:</string>
+    <string name="hold_training">Continue Training</string>
+    <string name="finish_training">Finish Training</string>
 
     <string name="connect_ble_warning">Your APP still not connect to the Homegym</string>
     <string name="connect_ble_warning1">Connect your homegym to start the sport</string>

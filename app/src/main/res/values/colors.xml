@@ -11,4 +11,7 @@
     <color name="colorButtonSelected">#ff323232</color>
     <color name="colorButtonBackground">#FF2E51</color>
     <color name="colorTextUnSelect">#8E8E8E</color>
+    <color name="colorStartTrainingBtn">#DAB173</color>
+    <color name="colorSelectPart">#323232</color>
+    <color name="colorHoldBtn">#50E3C2</color>
 </resources>

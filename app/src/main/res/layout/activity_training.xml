@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TrainingActivity">
+    tools:context=".TrainingActivity"
+    android:background="@color/colorBlack">
 
     <TextView
         android:id="@+id/free_mode"
@@ -13,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:textColor="@android:color/black"
+        android:textColor="@color/colorWhite"
         android:textSize="36sp"
         android:text="Free mode"/>
 
@@ -24,16 +25,18 @@
         android:layout_below="@id/free_mode"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:textColor="@android:color/black"
+        android:textColor="@color/colorButtonBackground"
         android:textSize="30sp"
-        android:text="坚持住！"/>
+        android:text="@string/hold_on"/>
 
     <TextView
         android:id="@+id/count_down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:textColor="@android:color/black"
+        android:clickable="true"
+        android:focusable="true"
+        android:textColor="@color/colorWhite"
         android:textStyle="bold"
         android:textSize="120sp"
         android:text="10"/>
@@ -42,159 +45,192 @@
         android:id="@+id/select_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/body_part"
-        android:layout_toEndOf="@id/body_part"
-        android:orientation="vertical"
-        android:visibility="invisible">
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/bottom_layout"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="100dp"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="10dp"
-            style="android:attr/borderlessButtonStyle"
-            android:gravity="center"
-            android:background="@color/colorButtonBackground"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:text="下半身"/>
+        <RelativeLayout
+            android:id="@+id/dumbbell_part"
+            android:layout_width="160dp"
+            android:layout_height="60dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@color/colorBlack">
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="10dp"
-            style="android:attr/borderlessButtonStyle"
-            android:gravity="center"
-            android:background="@color/colorTitleBackground"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"
-            android:text="上半身"/>
+            <ImageView
+                android:id="@+id/dumbbell_pic"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/training_ropeskipping_nor" />
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="10dp"
-            style="android:attr/borderlessButtonStyle"
-            android:gravity="center"
-            android:background="@color/colorTitleBackground"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"
-            android:text="腹部核心"/>
+            <TextView
+                android:id="@+id/dumbbell_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:textColor="@color/colorTextUnSelect"
+                android:textStyle="bold"
+                android:textSize="36sp"
+                android:text="0"/>
 
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="10dp"
-            style="android:attr/borderlessButtonStyle"
-            android:gravity="center"
-            android:background="@color/colorTitleBackground"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"
-            android:text="俯卧撑"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rope_skipping_part"
+            android:layout_width="160dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@color/colorBlack">
+
+            <ImageView
+                android:id="@+id/rope_skipping_pic"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/training_dumbbell_nor" />
+
+            <TextView
+                android:id="@+id/rope_skipping_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="center_vertical|end"
+                android:textColor="@color/colorTextUnSelect"
+                android:textStyle="bold"
+                android:textSize="36sp"
+                android:text="0"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/body_part"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/bottom_layout"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginBottom="20dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/upper_body" />
 
     <RelativeLayout
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="70dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="40dp"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp">
-
-        <RelativeLayout
-            android:id="@+id/count"
+        
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true">
+            android:layout_centerVertical="true"
+            android:orientation="vertical"
+            android:gravity="start|center_vertical">
 
             <TextView
-                android:id="@+id/count_value"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
-                android:gravity="center_vertical"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
+                android:layout_height="30dp"
+                android:gravity="start|center_vertical"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:text="@string/training_time"/>
+
+            <TextView
+                android:id="@+id/time_value"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:gravity="start|center_vertical"
+                android:textColor="@color/colorWhite"
                 android:textSize="36sp"
-                android:text="123"/>
+                android:textStyle="bold"
+                android:text="00:00:00"/>
 
-            <TextView
-                android:id="@+id/count_unit"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_toEndOf="@id/count_value"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:textColor="@android:color/black"
-                android:textSize="30sp"
-                android:text="counts"/>
+        </LinearLayout>
 
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/weight"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true">
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="start|center_vertical">
 
-            <TextView
-                android:id="@+id/weight_value"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
-                android:gravity="center_vertical"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:textSize="36sp"
-                android:text="50"/>
+                android:layout_height="30dp"
+                android:orientation="horizontal"
+                android:gravity="start|bottom">
 
-            <TextView
-                android:id="@+id/weight_unit"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_toEndOf="@id/weight_value"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:textColor="@android:color/black"
-                android:textSize="30sp"
-                android:text="LBS"/>
+                <TextView
+                    android:id="@+id/weight_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:textColor="@color/colorWhite"
+                    android:textStyle="bold"
+                    android:textSize="26sp"
+                    android:text="0"/>
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/weight_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20sp"
+                    android:text="LEVEL"/>
 
-        <TextView
-            android:id="@+id/time_value"
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/resistance_bar"
+                android:layout_width="300dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:progressDrawable="@drawable/seekbar_bg"
+                android:thumb="@drawable/seekbar_thumb"
+                android:max="10"
+                android:progress="0" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:drawableStart="@drawable/time_white"
-            android:textColor="@android:color/black"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            android:text="00:32:20"/>
+            android:orientation="vertical"
+            android:gravity="start|center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="start|center_vertical"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:text="@string/training_count"/>
+
+            <TextView
+                android:id="@+id/count_value"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:gravity="start|center_vertical"
+                android:textColor="@color/colorWhite"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                android:text="123"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

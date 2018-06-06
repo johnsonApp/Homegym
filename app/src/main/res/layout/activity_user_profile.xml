@@ -20,7 +20,7 @@
             android:layout_marginTop="30dp"
             android:layout_centerHorizontal="true"
             android:scaleType="fitXY"
-            android:src="@drawable/emoji1"/>
+            android:src="@drawable/head"/>
         
         <TextView
             android:id="@+id/main_page"
@@ -82,6 +82,18 @@
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
             android:text="俱乐部"/>
+
+        <TextView
+            android:id="@+id/connect_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="26dp"
+            android:drawableStart="@drawable/ble_unconnect"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:text="UNCONNECT"/>
 
     </RelativeLayout>
 

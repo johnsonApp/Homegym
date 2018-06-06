@@ -20,6 +20,7 @@ public class CountdownActivity extends Activity {
     private TimerTask mTimerTask;
     private Timer mTimer = new Timer();
     private MyHandler mHandler = new MyHandler(this);
+    private Intent mIntent;
 
     class MyHandler extends Handler{
         WeakReference<CountdownActivity> mActivity;
@@ -38,8 +39,8 @@ public class CountdownActivity extends Activity {
                         activity.mTimer.cancel();
                         CountdownActivity.this.finish();
                         //倒计时结束进入锻炼页面
-                        Intent intent = new Intent(CountdownActivity.this, TrainingActivity.class);
-                        startActivity(intent);
+                        mIntent.setClass(CountdownActivity.this, TrainingActivity.class);
+                        startActivity(mIntent);
                     }
                 }
             }
@@ -50,6 +51,7 @@ public class CountdownActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_countdown);
+        mIntent = getIntent();
         mBack = (ImageView) findViewById(R.id.back);
         mBack.setOnClickListener(listener);
         mCountDown = (TextView) findViewById(R.id.count_down);

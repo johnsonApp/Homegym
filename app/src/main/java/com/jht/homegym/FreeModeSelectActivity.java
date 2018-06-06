@@ -6,42 +6,52 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
-import java.util.ArrayList;
-
-public class FreeModeSelectActivity extends AppCompatActivity implements View.OnClickListener{
+public class FreeModeSelectActivity extends AppCompatActivity{
 
     private final static String TAG = "FreeModeTrainingActivity";
 
-    private final static int TEXTUNSELECTCOLOR = R.color.colorTextUnSelect;
-    private final static int TEXTSELECTEDCOLOR = R.color.colorBlack;
+    //private final static int TEXTUNSELECTCOLOR = R.color.colorTextUnSelect;
+    //private final static int TEXTSELECTEDCOLOR = R.color.colorBlack;
 
-    private final static int UPPER = 0;
-    private final static int LOWER = 1;
-    private final static int CHEST = 2;
-    private final static int CORE = 3;
+    //private final static int UPPER = 0;
+    //private final static int LOWER = 1;
+    //private final static int CHEST = 2;
+    //private final static int CORE = 3;
 
-    private ItemBody mUpperBody;
-    private ItemBody mLowerBody;
-    private ItemBody mChestBody;
-    private ItemBody mCoreBody;
+    //private ItemBody mUpperBody;
+    //private ItemBody mLowerBody;
+    //private ItemBody mChestBody;
+    //private ItemBody mCoreBody;
 
-    private ArrayList<ItemBody> mList;
+    //private ArrayList<ItemBody> mList;
+
+    private final static int DUMBBELL = 0;
+    private final static int HOMEGYM = 1;
+    private final static int ROPE_SKIP = 2;
+
+    private ImageView mBackBtn;
+    private Button mStartBtn;
+    private RelativeLayout mDumbbell;
+    private RelativeLayout mHomegym;
+    private RelativeLayout mRopeSkip;
 
     private int mIndex = -1;
 
-    private TextView mTrainingLable;
-    private TextView mTrainingBody;
-    private Button mStartButton;
+    private MyClickListener myClickListener;
+
+    //private TextView mTrainingLabel;
+    //private TextView mTrainingBody;
+    //private Button mStartButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_free_mode_select);
-        mTrainingLable = findViewById(R.id.traing_lable);
-        mTrainingBody = findViewById(R.id.traing_body);
+        /*
+        mTrainingLabel = findViewById(R.id.training_label);
+        mTrainingBody = findViewById(R.id.training_body);
         mStartButton = findViewById(R.id.start_training);
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,19 +65,73 @@ public class FreeModeSelectActivity extends AppCompatActivity implements View.On
                 }
             }
         });
-        initItemBody();
+        initItemBody();*/
+        mBackBtn = (ImageView) findViewById(R.id.back);
+        mStartBtn = (Button) findViewById(R.id.start_training);
+        mDumbbell = (RelativeLayout) findViewById(R.id.dumbbell);
+        mHomegym = (RelativeLayout) findViewById(R.id.homegym);
+        mRopeSkip = (RelativeLayout) findViewById(R.id.rope_skipping);
+        myClickListener = new MyClickListener();
+        mBackBtn.setOnClickListener(myClickListener);
+        mStartBtn.setOnClickListener(myClickListener);
+        mDumbbell.setOnClickListener(myClickListener);
+        mHomegym.setOnClickListener(myClickListener);
+        mRopeSkip.setOnClickListener(myClickListener);
+    }
+
+    class MyClickListener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.back){
+                FreeModeSelectActivity.this.finish();
+            } else if (v.getId() == R.id.start_training) {
+                Intent intent = new Intent();
+                intent.setClass(FreeModeSelectActivity.this, CountdownActivity.class);
+                intent.putExtra("selectIndex", mIndex);
+                startActivity(intent);
+            } else {
+                switch (mIndex){
+                    case DUMBBELL:
+                        mDumbbell.setBackground(getResources().getDrawable(R.drawable.chosebtn_ssel));
+                        break;
+                    case HOMEGYM:
+                        mHomegym.setBackground(getResources().getDrawable(R.drawable.chosebtn_bnor));
+                        break;
+                    case ROPE_SKIP:
+                        mRopeSkip.setBackground(getResources().getDrawable(R.drawable.chosebtn_ssel));
+                        break;
+                }
+                switch (v.getId()){
+                    case R.id.dumbbell:
+                        mDumbbell.setBackground(getResources().getDrawable(R.drawable.chosebtn_snor));
+                        mIndex = DUMBBELL;
+                        break;
+                    case R.id.homegym:
+                        mHomegym.setBackground(getResources().getDrawable(R.drawable.chosebtn_bsel));
+                        mIndex = HOMEGYM;
+                        break;
+                    case R.id.rope_skipping:
+                        mRopeSkip.setBackground(getResources().getDrawable(R.drawable.chosebtn_snor));
+                        mIndex = ROPE_SKIP;
+                        break;
+                }
+            }
+        }
     }
 
     @Override
     protected void onResume(){
         super.onResume();
+        /*
         if(mIndex != -1){
             setTrainingLable();
         }
+        */
     }
 
+    /*
     private void setTrainingLable(){
-        mTrainingLable.setText(R.string.selected_someone);
+        mTrainingLabel.setText(R.string.selected_someone);
         if(null != mList) {
             CharSequence temp = mList.get(mIndex).getBodyText();
             if(null != temp) {
@@ -75,7 +139,9 @@ public class FreeModeSelectActivity extends AppCompatActivity implements View.On
             }
         }
     }
+    */
 
+    /*
     private void initItemBody() {
         mUpperBody = new ItemBody(findViewById(R.id.upper_body),this);
         mUpperBody.init(R.drawable.upper_body,R.string.upper_body);
@@ -94,7 +160,9 @@ public class FreeModeSelectActivity extends AppCompatActivity implements View.On
         mList.add(CHEST,mChestBody);
         mList.add(CORE,mCoreBody);
     }
+    */
 
+    /*
     @Override
     public void onClick(View view){
         int which = 0;
@@ -118,7 +186,9 @@ public class FreeModeSelectActivity extends AppCompatActivity implements View.On
             setTrainingLable();
         }
     }
+    */
 
+    /*
     private void setItemSelected(int which){
         for(int i = UPPER; i <= CORE; i++){
             if(i == which){
@@ -127,8 +197,9 @@ public class FreeModeSelectActivity extends AppCompatActivity implements View.On
                 mList.get(i).setIsSelected(false);
             }
         }
-    }
+    }*/
 
+    /*
     private class ItemBody {
         private ImageView mbodyImage;
         private TextView mBodyText;
@@ -178,4 +249,5 @@ public class FreeModeSelectActivity extends AppCompatActivity implements View.On
             mBodyText.setTextColor(color);
         }
     }
+    */
 }

@@ -5,44 +5,137 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/bg_freemode"
     tools:context="com.jht.homegym.FreeModeTrainingActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/free_mode"
-        android:textSize="48sp"
-        android:layout_marginTop="30dp"
-        android:textStyle="bold"
-        android:textColor="@color/colorBlack"
-        />
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/chevronleft"
+            android:layout_marginStart="20dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="@string/free_mode"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"
+            />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         >
        <TextView
-           android:id="@+id/traing_lable"
+           android:id="@+id/training_label"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:text="@string/select_trainging_body"
-           android:textSize="36sp"
-           android:textColor="@color/colorBlack"
+           android:text="@string/select_training_equipment"
+           android:textSize="30sp"
+           android:textColor="@color/colorWhite"
            />
 
         <TextView
-            android:id="@+id/traing_body"
+            android:id="@+id/training_body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="36sp"
-            android:textColor="@color/colorBlack"
+            android:textColor="@color/colorWhite"
             />
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal|bottom">
+        <RelativeLayout
+            android:id="@+id/dumbbell"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:background="@drawable/chosebtn_ssel">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/chose_dumbbell"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="40dp"
+                android:textColor="@color/colorWhite"
+                android:textSize="18sp"
+                android:text="@string/dumbbell"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/homegym"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/chosebtn_bnor">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/chose_homegym"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="40dp"
+                android:textColor="@color/colorWhite"
+                android:textSize="18sp"
+                android:text="@string/homegym"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rope_skipping"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:background="@drawable/chosebtn_ssel">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/chose_ropeskipping"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="40dp"
+                android:textColor="@color/colorWhite"
+                android:textSize="18sp"
+                android:text="@string/rope_skipping"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <!--
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -79,6 +172,9 @@
             android:layout_marginLeft="84dp"
             layout="@layout/item_body"
             />
+
+    </LinearLayout>
+    -->
 
         <!--<LinearLayout
             android:id="@+id/upperbody"
@@ -173,8 +269,6 @@
                 />
         </LinearLayout>-->
 
-    </LinearLayout>
-
     <Button
         android:id="@+id/start_training"
         android:layout_width="wrap_content"
@@ -183,9 +277,9 @@
         android:text="@string/start_training"
         android:layout_gravity="center"
         android:textColor="@color/colorWhite"
-        android:background="@color/colorButtonBackground"
+        android:background="@color/colorStartTrainingBtn"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
-        android:layout_marginTop="162dp"
+        android:layout_marginTop="30dp"
         />
 </LinearLayout>

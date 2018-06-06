@@ -15,21 +15,29 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jht.homegym.ble.MultipleBleService;
-import com.jht.homegym.utils.CrcUtils;
+import com.jht.homegym.dao.App;
+import com.jht.homegym.dao.FreeTraining;
 import com.jht.homegym.utils.ThingyUtils;
 import com.jht.homegym.algorithm.AccessoryExercise;
 
-import java.util.HashMap;
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import io.objectbox.Box;
+import io.objectbox.query.Query;
 
 public class TrainingActivity extends Activity {
 
@@ -37,14 +45,32 @@ public class TrainingActivity extends Activity {
 
     public static final int SERVICE_BIND = 1;
     public static final int UPDATE_COUNT = 2;
+    public static final int DUMBBELL = 3;
+    public static final int ROPE_SKIP = 4;
+    public static final int HOMEGYM = 5;
+    public static final int TIME_CHANGE = 6;
+    public static final int REQUEST = 7;
+    public static final int RESULT_CONTINUE = 8;
+    public static final int RESULT_FINISH = 9;
 
-    private ImageView mBodyImage;
-    private LinearLayout mSelectLayout;
-    private int[] mBtnId = {R.id.button1, R.id.button2, R.id.button3, R.id.button4};
-    private Button[] mButtons = new Button[mBtnId.length];
-    private int mCurPart = 0;//当前选中的身体部分
+    private int mSelectIndex = -1;
+
     private TextView mCountDown;
+    private RelativeLayout mDumbbellPart;
+    private RelativeLayout mRopeSkippingPart;
+    private ImageView mDumbbellPic;
+    private ImageView mRopeSkippingPic;
+    private TextView mDumbbellValue;
+    private TextView mRopeSkippingValue;
+    private TextView mTrainingTime;
+    private TextView mResistanceValue;
+    private SeekBar mResistanceBar;
 
+    private long startTime;
+    private Timer mTimer = new Timer();
+
+    private Box<FreeTraining> mFreeTrainingBox;
+    private Query<FreeTraining> mFreeTrainingQuery;
 
     private boolean mIsBind;
     private MultipleBleService mBleService;
@@ -79,6 +105,35 @@ public class TrainingActivity extends Activity {
                 case UPDATE_COUNT:
                     mCountDown.setText(String.valueOf(mDumbbellExerciseCounter));
                     break;
+                case DUMBBELL:
+                    //mCountDown.setText("0");
+                    mRopeSkippingPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+                    mDumbbellPart.setBackgroundColor(getResources().getColor(R.color.colorSelectPart));
+                    mRopeSkippingPic.setImageDrawable(getResources().getDrawable(R.drawable.training_ropeskipping_nor));
+                    mDumbbellPic.setImageDrawable(getResources().getDrawable(R.drawable.training_dumbbell_sel));
+                    mRopeSkippingValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
+                    mDumbbellValue.setTextColor(getResources().getColor(R.color.colorWhite));
+                    break;
+                case ROPE_SKIP:
+                    //mCountDown.setText("0");
+                    mRopeSkippingPart.setBackgroundColor(getResources().getColor(R.color.colorSelectPart));
+                    mDumbbellPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+                    mRopeSkippingPic.setImageDrawable(getResources().getDrawable(R.drawable.training_ropeskipping_sel));
+                    mDumbbellPic.setImageDrawable(getResources().getDrawable(R.drawable.training_dumbbell_nor));
+                    mRopeSkippingValue.setTextColor(getResources().getColor(R.color.colorWhite));
+                    mDumbbellValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
+                    break;
+                case HOMEGYM:
+                    mRopeSkippingPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+                    mDumbbellPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+                    mRopeSkippingPic.setImageDrawable(getResources().getDrawable(R.drawable.training_ropeskipping_nor));
+                    mDumbbellPic.setImageDrawable(getResources().getDrawable(R.drawable.training_dumbbell_nor));
+                    mRopeSkippingValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
+                    mDumbbellValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
+                    break;
+                case TIME_CHANGE:
+                    mTrainingTime.setText(String.valueOf(msg.obj));
+                    break;
             }
         }
     };
@@ -88,17 +143,50 @@ public class TrainingActivity extends Activity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"onCreate");
         setContentView(R.layout.activity_training);
-        mBodyImage = (ImageView) findViewById(R.id.body_part);
-        mSelectLayout = (LinearLayout) findViewById(R.id.select_layout);
-        int length = mBtnId.length;
-        for (int i = 0; i < length; i++){
-            mButtons[i] = (Button) findViewById(mBtnId[i]);
-            mButtons[i].setOnClickListener(listener);
-        }
-        mBodyImage.setOnClickListener(listener);
-        //从上个页面获取curPart的值，然后给curPart赋值
+        mSelectIndex = getIntent().getIntExtra("selectIndex", -1);
+        Log.e(TAG,"selectIndex = " + mSelectIndex);
 
-        mCountDown = findViewById(R.id.count_down);
+        mCountDown = (TextView) findViewById(R.id.count_down);
+        mCountDown.setOnClickListener(listener);
+
+        mDumbbellPart = (RelativeLayout) findViewById(R.id.dumbbell_part);
+        mRopeSkippingPart = (RelativeLayout) findViewById(R.id.rope_skipping_part);
+        mDumbbellPic = (ImageView) findViewById(R.id.dumbbell_pic);
+        mRopeSkippingPic = (ImageView) findViewById(R.id.rope_skipping_pic);
+        mDumbbellValue = (TextView) findViewById(R.id.dumbbell_value);
+        mRopeSkippingValue = (TextView) findViewById(R.id.rope_skipping_value);
+        mDumbbellPart.setOnClickListener(listener);
+        mRopeSkippingPart.setOnClickListener(listener);
+        if (mSelectIndex == 0){
+            mHandler.sendEmptyMessage(DUMBBELL);
+        } else if (mSelectIndex == 1){
+            mHandler.sendEmptyMessage(HOMEGYM);
+        } else if (mSelectIndex == 2){
+            mHandler.sendEmptyMessage(ROPE_SKIP);
+        }
+
+        mTrainingTime = (TextView) findViewById(R.id.time_value);
+        startTime = SystemClock.elapsedRealtime();
+        TimerTask mTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                long time = (SystemClock.elapsedRealtime()- startTime) / 1000;
+                String hh = new DecimalFormat("00").format(time / 3600);
+                String mm = new DecimalFormat("00").format(time % 3600 / 60);
+                String ss = new DecimalFormat("00").format(time % 60);
+                String timeFormat = hh + ":" + mm + ":" + ss;
+                mHandler.sendMessage(mHandler.obtainMessage(TIME_CHANGE, timeFormat));
+            }
+        };
+        mTimer.schedule(mTimerTask, 1000, 1000);
+        mResistanceValue = (TextView) findViewById(R.id.weight_value);
+        mResistanceBar = (SeekBar) findViewById(R.id.resistance_bar);
+        mResistanceBar.setOnSeekBarChangeListener(resistanceListener);
+
+        //ObjectBox manage the database
+        mFreeTrainingBox = ((App) getApplication()).getBoxStore().boxFor(FreeTraining.class);
+        mFreeTrainingQuery = mFreeTrainingBox.query().build();
+        //List<FreeTraining> listFreeTraining = mFreeTrainingQuery.find();
 
         mDumbbellExercise = new AccessoryExercise();
         doBindService();
@@ -107,26 +195,38 @@ public class TrainingActivity extends Activity {
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.body_part){
-                if (mSelectLayout.getVisibility() == View.VISIBLE){
-                    mSelectLayout.setVisibility(View.INVISIBLE);
-                } else if (mSelectLayout.getVisibility() == View.INVISIBLE){
-                    mSelectLayout.setVisibility(View.VISIBLE);
-                }
-            } else {
-                int length = mBtnId.length;
-                for (int i = 0; i < length; i++){
-                    if (v.getId() == mBtnId[i]){
-                        mButtons[mCurPart].setBackgroundColor(getResources().getColor(R.color.colorTitleBackground));
-                        mButtons[mCurPart].setTextColor(getResources().getColor(android.R.color.black));
-                        mCurPart = i;
-                        mButtons[mCurPart].setBackgroundColor(getResources().getColor(R.color.colorButtonBackground));
-                        mButtons[mCurPart].setTextColor(getResources().getColor(android.R.color.white));
-                    }
-                }
+            switch (v.getId()){
+                case R.id.count_down:
+                    mHandler.sendEmptyMessage(HOMEGYM);
+                    break;
+                case R.id.dumbbell_part:
+                    mHandler.sendEmptyMessage(DUMBBELL);
+                    break;
+                case R.id.rope_skipping_part:
+                    mHandler.sendEmptyMessage(ROPE_SKIP);
+                    break;
             }
         }
     };
+
+    SeekBar.OnSeekBarChangeListener resistanceListener = new SeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            mResistanceValue.setText(String.valueOf(progress));
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    };
+
+
 
     public void onStop(){
         super.onStop();
@@ -220,10 +320,10 @@ public class TrainingActivity extends Activity {
                     if(null != mHomegymWriteCharacteristic) {
                         Log.d(TAG,"find mHomegymWriteCharacteristic");
                         byte[] data = getParameter();
-                        boolean result = mBleService.writeCharacteristic(address, ThingyUtils.HOMEGYM_BASE_UUID,
-                                ThingyUtils.HOMEGYM_WRITE_UUID, data);
-                        //mHomegymWriteCharacteristic.setValue(data);
-                        //boolean result =  gatt.writeCharacteristic(mHomegymWriteCharacteristic);
+                        //boolean result = mBleService.writeCharacteristic(address, ThingyUtils.HOMEGYM_BASE_UUID,
+                        //        ThingyUtils.HOMEGYM_WRITE_UUID, data);
+                        mHomegymWriteCharacteristic.setValue(data);
+                        boolean result =  gatt.writeCharacteristic(mHomegymWriteCharacteristic);
                         Log.d(TAG,"writeCharacteristic result " + result);
                     }
                 }
@@ -336,5 +436,32 @@ public class TrainingActivity extends Activity {
             }
         }
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        Intent intent = new Intent();
+        intent.setClass(TrainingActivity.this, TrainingPauseActivity.class);
+        startActivityForResult(intent, REQUEST);
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode){
+            case RESULT_CONTINUE:
+
+                break;
+            case RESULT_FINISH:
+
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void finish() {
+        mTimer.cancel();
+        super.finish();
     }
 }

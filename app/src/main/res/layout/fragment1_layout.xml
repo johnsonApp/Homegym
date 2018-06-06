@@ -24,14 +24,15 @@
 
         <TextView
             android:id="@+id/hello2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/hello1"
-            android:gravity="start"
-            android:textColor="#ff2e51"
+            android:gravity="start|center_vertical"
+            android:clickable="true"
+            android:textColor="@color/selector_bg"
             android:textSize="26sp"
-            android:text="订制你的健身计划"/>
+            android:text="订制你的健身计划 →"/>
 
         <ImageView
             android:id="@+id/free_mode"
@@ -39,7 +40,8 @@
             android:layout_height="110dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:src="@drawable/free_mode" />
+            android:clickable="true"
+            android:src="@drawable/free_mode_bg" />
 
     </RelativeLayout>
 

@@ -1,0 +1,28 @@
+<resources>
+    <string name="free_mode">自由訓練</string>
+    <string name="select_training_body">選擇你想要鍛煉的部位</string>
+    <string name="select_training_equipment">選擇訓練器材</string>
+    <string name="selected_someone">鍛煉你的</string>
+    <string name="upper_body">上半身</string>
+    <string name="lower_body">下半身</string>
+    <string name="chest_body">胸部</string>
+    <string name="core_body">核心</string>
+    <string name="dumbbell">啞鈴</string>
+    <string name="homegym">Homegym 拉環</string>
+    <string name="rope_skipping">跳繩</string>
+    <string name="start_training">開始訓練</string>
+    <string name="hold_on">堅持住！</string>
+    <string name="training_time">運動時長：</string>
+    <string name="training_count">總計數：</string>
+    <string name="hold_training">繼續訓練</string>
+    <string name="finish_training">結束訓練</string>
+
+    <string name="connect_ble_warning">您沒有連接Homegym設備</string>
+    <string name="connect_ble_warning1">現在連接您的設備開始專業的健身</string>
+    <string name="connect_ble_connect">連接</string>
+
+    <string name="scanning">掃描中...</string>
+    <string name="connecting">連接中...</string>
+    <string name="disconnecting">正在斷開...</string>
+    <string name="dev_conn_number">设設備連接數量：</string>
+</resources>

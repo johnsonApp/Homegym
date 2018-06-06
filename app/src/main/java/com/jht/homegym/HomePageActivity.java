@@ -5,6 +5,9 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +18,8 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.net.Uri;
+
+import java.lang.ref.WeakReference;
 
 public class HomePageActivity extends AppCompatActivity implements View.OnClickListener,
         MainPageFragment.OnFragmentInteractionListener{
@@ -41,6 +46,9 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
     private TrainingClassFragment mTrainingClassFragment;
 
     BluetoothAdapter mBluetoothAdapter;
+
+    private TextView mConnectStatus;
+    private MyHandler myHandler = new MyHandler(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +80,18 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
         //addFragmentToContainer(mMainPageFragment,"main_page");
         switchFragment(mMainPageFragment);
         mCurrentPage = MAIN_PAGE;
+
+        mConnectStatus = (TextView) findViewById(R.id.connect_status);
+        mConnectStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (String.valueOf(mConnectStatus.getText()).equals("UNCONNECT")){
+                    myHandler.sendEmptyMessage(0);
+                }else if (String.valueOf(mConnectStatus.getText()).equals("CONNECT")){
+                    myHandler.sendEmptyMessage(1);
+                }
+            }
+        });
     }
 
     @Override
@@ -168,5 +188,31 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
 
     public void onFragmentInteraction(Uri uri){
 
+    }
+
+    class MyHandler extends Handler {
+        WeakReference<HomePageActivity> mActivity;
+
+        MyHandler(HomePageActivity activity){
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            HomePageActivity activity = mActivity.get();
+            if (activity != null){
+                if (msg.what == 0){
+                    mConnectStatus.setText("CONNECT");
+                    Drawable drawable = getResources().getDrawable(R.drawable.ble_connect, null);
+                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                    mConnectStatus.setCompoundDrawablesRelative(drawable, null, null, null);
+                } else if (msg.what == 1){
+                    mConnectStatus.setText("UNCONNECT");
+                    Drawable drawable = getResources().getDrawable(R.drawable.ble_unconnect, null);
+                    drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                    mConnectStatus.setCompoundDrawablesRelative(drawable, null, null, null);
+                }
+            }
+        }
     }
 }

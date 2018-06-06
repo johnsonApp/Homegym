@@ -296,7 +296,7 @@ public class MultipleBleService extends Service implements Constants, BleListene
      * @return true, if the remote service discovery has been started
      */
     public boolean discoverServices(String address) {
-        if (mBluetoothGattMap.get(address) == null) return false;
+        if (null == mBluetoothGattMap || mBluetoothGattMap.get(address) == null) return false;
         return mBluetoothGattMap.get(address).discoverServices();
     }
 

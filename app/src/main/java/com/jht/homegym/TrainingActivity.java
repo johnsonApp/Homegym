@@ -475,9 +475,11 @@ public class TrainingActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Intent intent = new Intent();
-        intent.setClass(TrainingActivity.this, TrainingPauseActivity.class);
-        startActivityForResult(intent, REQUEST);
+        if (event.getAction() == MotionEvent.ACTION_UP){
+            Intent intent = new Intent();
+            intent.setClass(TrainingActivity.this, TrainingPauseActivity.class);
+            startActivityForResult(intent, REQUEST);
+        }
         return true;
     }
 

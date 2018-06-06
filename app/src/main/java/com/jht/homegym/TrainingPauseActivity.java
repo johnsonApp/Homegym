@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TrainingPauseActivity extends Activity {
+    private String TAG = "TrainingPauseActivity";
     private TextView mRestTime;
 
     private long startTime;
@@ -43,6 +45,8 @@ public class TrainingPauseActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_pause);
+        Log.e(TAG, "onCreate");
+        mHandler = new MyHandler(this);
         mRestTime = (TextView) findViewById(R.id.rest_time);
         Button holdTraining = (Button) findViewById(R.id.hold_train);
         Button finishTraining = (Button) findViewById(R.id.finish_train);
@@ -75,7 +79,7 @@ public class TrainingPauseActivity extends Activity {
                     setResult(TrainingActivity.RESULT_FINISH);
                     break;
             }
-            TrainingPauseActivity.this.finish();
+            finish();
         }
     };
 

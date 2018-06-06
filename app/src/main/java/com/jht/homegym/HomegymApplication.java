@@ -9,7 +9,6 @@ import com.jht.homegym.dao.MyObjectBox;
 
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidObjectBrowser;
-import com.jht.homegym.BuildConfig;
 
 public class HomegymApplication extends Application {
 

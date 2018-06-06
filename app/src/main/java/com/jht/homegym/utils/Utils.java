@@ -368,6 +368,11 @@ public class Utils {
 
     public static final int REQUEST_CODE_ACCESS_COARSE_LOCATION = 1;
 
+    public final static int DUMBBELL = 0;
+    public final static int ROPE_SKIP = 1;
+    public final static int HOMEGYM = 2;
+
+
     /**
      * URI Scheme maps a byte code into the scheme and an optional scheme specific prefix.
      */

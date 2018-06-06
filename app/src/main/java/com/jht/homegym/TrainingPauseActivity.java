@@ -20,7 +20,7 @@ public class TrainingPauseActivity extends Activity {
 
     private long startTime;
     private Timer mTimer = new Timer();
-    private MyHandler mHandler;
+    private MyHandler mHandler = new MyHandler(this);
     class MyHandler extends Handler {
         WeakReference<TrainingPauseActivity> mActivity;
 
@@ -83,5 +83,10 @@ public class TrainingPauseActivity extends Activity {
     public void finish() {
         mTimer.cancel();
         super.finish();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
     }
 }

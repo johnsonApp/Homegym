@@ -71,6 +71,7 @@ public class BleActivity extends AppCompatActivity {
                 Log.i(TAG, "onReceive: CONNECTED: " + mBleService.getConnectDevices().size());
                 if(mBleService.getConnectDevices().size() > 0){
                     mIsConnected = true;
+                    connectChanged();
                 }
                 dismissDialog();
                 updateUI(Constants.STATE_CONNECTED);
@@ -78,6 +79,7 @@ public class BleActivity extends AppCompatActivity {
                 Log.i(TAG, "onReceive: DISCONNECTED: " + mBleService.getConnectDevices().size());
                 if(mBleService.getConnectDevices().size() == 0){
                     mIsConnected = false;
+                    connectChanged();
                 }
                 dismissDialog();
                 updateUI(Constants.STATE_DISCONNECTED);
@@ -180,6 +182,9 @@ public class BleActivity extends AppCompatActivity {
         if(null == mProgressDialog || !mProgressDialog.isShowing()) {
             showDialog(getResources().getString(R.string.scanning));
         }
+        if (scan && mBleService.isScanning()) {
+            mBleService.scanLeDevice(false);
+        }
         if(!mIsHomegymScan){
             mBleService.scanLeDevice(scan,HomegymUUID);
         }else if(!mIsThingyScan){
@@ -189,7 +194,7 @@ public class BleActivity extends AppCompatActivity {
     }
 
     public void stopScan(){
-        if (mBleService.isScanning()) {
+        if (null != mBleService && mBleService.isScanning()) {
             mBleService.scanLeDevice(false);
         }
     }
@@ -197,7 +202,7 @@ public class BleActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mBleService.isScanning()) {
+        if (null != mBleService && mBleService.isScanning()) {
             mBleService.scanLeDevice(false);
             return;
         }
@@ -207,7 +212,7 @@ public class BleActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (mBleService.isScanning()) {
+        if (null != mBleService && mBleService.isScanning()) {
             mBleService.scanLeDevice(false);
         }
         doUnBindService();
@@ -266,8 +271,32 @@ public class BleActivity extends AppCompatActivity {
         }
     }
 
-    public boolean getIsConnected(){
-        return mIsConnected;
+
+    public void setConnect(){
+        int size = mDeviceList.size();
+        if(0 == size){
+            setScan(true);
+        }else {
+            connectDevice();
+        }
+    }
+
+    public void setDisconnect(){
+        int size = mDeviceList.size();
+        if(0 == size){
+            dismissDialog();
+            Log.i(TAG,"connectDevice make Toast");
+            Toast.makeText(this,"Can not find any device ,please retry",Toast.LENGTH_LONG);
+            return;
+        }
+        for (int i = 0; i < size; i++) {
+            HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
+            Log.i(TAG,"connectDevice " + devMap.get(ADDRESS).toString());
+            if((boolean)devMap.get(IS_CONNECTED)) {
+                mBleService.disconnect(devMap.get(ADDRESS).toString());
+            }
+        }
+        Log.i(TAG,"connectDevice " + size);
     }
 
     private void connectDevice() {
@@ -290,6 +319,10 @@ public class BleActivity extends AppCompatActivity {
     }
 
     public void updateUI(int status){
+
+    }
+
+    public void connectChanged(){
 
     }
 }

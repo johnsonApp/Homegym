@@ -47,6 +47,8 @@ public class TrainingActivity extends Activity {
 
     private static final String  TAG = "TrainingActivity";
 
+    private final String SELECT_MODE = "select_mode";
+
     public static final int SERVICE_BIND = 1;
     public static final int UPDATE_COUNT = 2;
     public static final int DUMBBELL = 3;
@@ -115,6 +117,7 @@ public class TrainingActivity extends Activity {
                     mDumbbellPic.setImageDrawable(getResources().getDrawable(R.drawable.training_dumbbell_sel));
                     mRopeSkippingValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
                     mDumbbellValue.setTextColor(getResources().getColor(R.color.colorWhite));
+                    setAccessoryMode(Utils.DUMBBELL);
                     break;
                 case ROPE_SKIP:
                     //mCountDown.setText("0");
@@ -124,6 +127,7 @@ public class TrainingActivity extends Activity {
                     mDumbbellPic.setImageDrawable(getResources().getDrawable(R.drawable.training_dumbbell_nor));
                     mRopeSkippingValue.setTextColor(getResources().getColor(R.color.colorWhite));
                     mDumbbellValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
+                    setAccessoryMode(Utils.ROPE_SKIP);
                     break;
                 case HOMEGYM:
                     mRopeSkippingPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
@@ -145,7 +149,7 @@ public class TrainingActivity extends Activity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"onCreate");
         setContentView(R.layout.activity_training);
-        mSelectIndex = getIntent().getIntExtra("selectIndex", -1);
+        mSelectIndex = getIntent().getIntExtra(SELECT_MODE, -1);
         Log.e(TAG,"selectIndex = " + mSelectIndex);
 
         mCountDown = (TextView) findViewById(R.id.count_down);
@@ -297,7 +301,7 @@ public class TrainingActivity extends Activity {
                 BluetoothGattService accessoryGattService = gatt.getService(Utils.THINGY_MOTION_SERVICE);
                 if (accessoryGattService != null) {
                     mAccessoryAddress = address;
-                    Log.d(TAG,"find accessory service");
+                    /*Log.d(TAG,"find accessory service");
                     mAccessoryReadCharacteristic = accessoryGattService.getCharacteristic(Utils.ACCESSORY_READ_UUID);
                     mAccessoryWriteCharacteristic = accessoryGattService.getCharacteristic(Utils.ACCESSORY_WRITE_UUID);
                     mAccessorySensorCharacteristic = accessoryGattService.getCharacteristic(Utils.ACCESSORY_SENSOR_UUID);
@@ -310,14 +314,14 @@ public class TrainingActivity extends Activity {
                     }
                     if(null != mAccessorySensorCharacteristic) {
                         Log.d(TAG, "find accessory  sensor service");
-                    }
+                    }*/
                     /*mMotionConfigurationCharacteristic = motionGattService.getCharacteristic(ThingyUtils.THINGY_MOTION_CONFIGURATION_CHARACTERISTIC);
                     mTapCharacteristic = motionGattService.getCharacteristic(ThingyUtils.TAP_CHARACTERISTIC);
                     mOrientationCharacteristic = motionGattService.getCharacteristic(ThingyUtils.ORIENTATION_CHARACTERISTIC);
                     mQuaternionCharacteristic = motionGattService.getCharacteristic(ThingyUtils.QUATERNION_CHARACTERISTIC);
-                    mPedometerCharacteristic = motionGattService.getCharacteristic(ThingyUtils.PEDOMETER_CHARACTERISTIC);
-                    mRawDataCharacteristic = motionGattService.getCharacteristic(Utils.RAW_DATA_CHARACTERISTIC);
-                    mEulerCharacteristic = motionGattService.getCharacteristic(ThingyUtils.EULER_CHARACTERISTIC);
+                    mPedometerCharacteristic = motionGattService.getCharacteristic(ThingyUtils.PEDOMETER_CHARACTERISTIC);*/
+                    mRawDataCharacteristic = accessoryGattService.getCharacteristic(Utils.RAW_DATA_CHARACTERISTIC);
+                    /*mEulerCharacteristic = motionGattService.getCharacteristic(ThingyUtils.EULER_CHARACTERISTIC);
                     mRotationMatrixCharacteristic = motionGattService.getCharacteristic(ThingyUtils.ROTATION_MATRIX_CHARACTERISTIC);
                     mHeadingCharacteristic = motionGattService.getCharacteristic(ThingyUtils.HEADING_CHARACTERISTIC);
                     mGravityVectorCharacteristic = motionGattService.getCharacteristic(ThingyUtils.GRAVITY_VECTOR_CHARACTERISTIC);*/
@@ -437,6 +441,15 @@ public class TrainingActivity extends Activity {
                 mBleService.setCharacteristicNotification(address,readCharacteristic,true);
             }
         }, 300);
+    }
+
+    private boolean setAccessoryMode(int mode) {
+        if(null != mBleService){
+            byte[] data = BLECommand.setParameter(BLECommand.SET_PARAMETER_ACCESSORY_MODE,mode);
+            return mBleService.writeCharacteristic(mHomegymAddress, Utils.HOMEGYM_BASE_UUID,
+                    Utils.HOMEGYM_WRITE_UUID, data);
+        }
+        return false;
     }
 
     private boolean  setHomegyResistance(int levle){

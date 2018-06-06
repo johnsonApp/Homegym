@@ -34,6 +34,8 @@ public class MainPageFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private boolean mIsConnect;
+
     public MainPageFragment() {
         // Required empty public constructor
     }
@@ -75,7 +77,13 @@ public class MainPageFragment extends Fragment {
         free_mode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), ConnectBleActivity.class/*FreeModeSelectActivity.class*/));
+                Intent intent;
+                if(mIsConnect){
+                    intent = new Intent(getContext(), FreeModeSelectActivity.class);
+                }else {
+                    intent = new Intent(getContext(), ConnectBleActivity.class);
+                }
+                startActivity(intent);
             }
         });
         return view;
@@ -123,5 +131,9 @@ public class MainPageFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void setIsConnect(boolean isConnect) {
+        mIsConnect = isConnect;
     }
 }

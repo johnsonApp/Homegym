@@ -135,6 +135,12 @@ public class HomePageActivity extends BleActivity implements View.OnClickListene
         }
     }
 
+    public void connectChanged(){
+        if(null != mMainPageFragment){
+            mMainPageFragment.setIsConnect(mIsConnected);
+        }
+    }
+
     @Override
     public void onClick(View view){
         int newPage = 0;
@@ -246,8 +252,10 @@ public class HomePageActivity extends BleActivity implements View.OnClickListene
             if (activity != null){
                 switch(msg.what){
                     case MESSAGE_BLE_CONNECT:
+                        setConnect();
                         break;
                     case MESSAGE_BLE_DISCONNECT:
+                        setDisconnect();
                         break;
                     case MESSAGE_UPDATE_BLE_STATUS:
                         if(mIsConnected != mConnectedStatus){

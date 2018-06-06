@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.jht.homegym.utils.Utils;
+
 public class FreeModeSelectActivity extends AppCompatActivity{
 
     private final static String TAG = "FreeModeTrainingActivity";
@@ -27,9 +29,7 @@ public class FreeModeSelectActivity extends AppCompatActivity{
 
     //private ArrayList<ItemBody> mList;
 
-    private final static int DUMBBELL = 0;
-    private final static int HOMEGYM = 1;
-    private final static int ROPE_SKIP = 2;
+    private final String SELECT_MODE = "select_mode";
 
     private ImageView mBackBtn;
     private Button mStartBtn;
@@ -87,32 +87,32 @@ public class FreeModeSelectActivity extends AppCompatActivity{
             } else if (v.getId() == R.id.start_training) {
                 Intent intent = new Intent();
                 intent.setClass(FreeModeSelectActivity.this, CountdownActivity.class);
-                intent.putExtra("selectIndex", mIndex);
+                intent.putExtra(SELECT_MODE, mIndex);
                 startActivity(intent);
             } else {
                 switch (mIndex){
-                    case DUMBBELL:
+                    case Utils.DUMBBELL:
                         mDumbbell.setBackground(getResources().getDrawable(R.drawable.chosebtn_ssel));
                         break;
-                    case HOMEGYM:
+                    case Utils.HOMEGYM:
                         mHomegym.setBackground(getResources().getDrawable(R.drawable.chosebtn_bnor));
                         break;
-                    case ROPE_SKIP:
+                    case Utils.ROPE_SKIP:
                         mRopeSkip.setBackground(getResources().getDrawable(R.drawable.chosebtn_ssel));
                         break;
                 }
                 switch (v.getId()){
                     case R.id.dumbbell:
                         mDumbbell.setBackground(getResources().getDrawable(R.drawable.chosebtn_snor));
-                        mIndex = DUMBBELL;
+                        mIndex = Utils.DUMBBELL;
                         break;
                     case R.id.homegym:
                         mHomegym.setBackground(getResources().getDrawable(R.drawable.chosebtn_bsel));
-                        mIndex = HOMEGYM;
+                        mIndex = Utils.HOMEGYM;
                         break;
                     case R.id.rope_skipping:
                         mRopeSkip.setBackground(getResources().getDrawable(R.drawable.chosebtn_snor));
-                        mIndex = ROPE_SKIP;
+                        mIndex = Utils.ROPE_SKIP;
                         break;
                 }
             }

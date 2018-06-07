@@ -56,8 +56,8 @@ public class TrainingActivity extends Activity {
     private static final int MSG_HOMEGYM = 5;
     private static final int TIME_CHANGE = 6;
     private static final int REQUEST = 7;
-    private static final int RESULT_CONTINUE = 8;
-    private static final int RESULT_FINISH = 9;
+    public static final int RESULT_CONTINUE = 8;
+    public static final int RESULT_FINISH = 9;
 
     private int mSelectIndex;
 
@@ -77,7 +77,7 @@ public class TrainingActivity extends Activity {
 
     private long mStartTime = 0L;
     private long mTotalTime = 0L;
-    private Timer mTimer = new Timer();
+    private Timer mTimer;
     private TimerTask mTimerTask;
 
     private Box<FreeTraining> mFreeTrainingBox;
@@ -181,6 +181,7 @@ public class TrainingActivity extends Activity {
 
         mTrainingTime = (TextView) findViewById(R.id.time_value);
         mStartTime = SystemClock.elapsedRealtime();
+        mTimer = new Timer();
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
@@ -483,6 +484,7 @@ public class TrainingActivity extends Activity {
             intent.setClass(TrainingActivity.this, TrainingPauseActivity.class);
             startActivityForResult(intent, REQUEST);
             mTimer.cancel();
+            mTimer.purge();
             mTotalTime = SystemClock.elapsedRealtime() - mStartTime + mTotalTime;
         }
         return true;
@@ -493,6 +495,13 @@ public class TrainingActivity extends Activity {
         switch (resultCode){
             case RESULT_CONTINUE:
                 mStartTime = SystemClock.elapsedRealtime();
+                mTimer = new Timer();
+                mTimerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        mHandler.sendMessage(mHandler.obtainMessage(TIME_CHANGE, timeReversal(SystemClock.elapsedRealtime()- mStartTime + mTotalTime)));
+                    }
+                };
                 mTimer.schedule(mTimerTask, 1000, 1000);
                 break;
             case RESULT_FINISH:

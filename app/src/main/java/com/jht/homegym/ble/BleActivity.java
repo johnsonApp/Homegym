@@ -2,6 +2,7 @@ package com.jht.homegym.ble;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
@@ -109,7 +110,14 @@ public class BleActivity extends AppCompatActivity {
             if (mBleService.initialize()) {
                 if (mBleService.enableBluetooth(true)) {
                     if(Utils.handleVersionPermission(BleActivity.this)){
-                        setScan(true);
+                        List<BluetoothDevice> list = mBleService.getConnectDevices();
+                        if (list == null || list.size() == 0){
+                            if (mDeviceList == null || mDeviceList.size() == 0) {
+                                setScan(true);
+                            } else {
+                                connectDevice();
+                            }
+                        }
                     }
                     Toast.makeText(BleActivity.this, "Bluetooth was opened", Toast.LENGTH_SHORT).show();
                 }
@@ -145,6 +153,11 @@ public class BleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDeviceList = new ArrayList<Map<String, Object>>();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         registerReceiver(mBleReceiver, makeIntentFilter());
         doBindService();
     }
@@ -300,22 +313,25 @@ public class BleActivity extends AppCompatActivity {
     }
 
     private void connectDevice() {
-        showDialog(getResources().getString(R.string.connecting));
-        int size = mDeviceList.size();
-        if(0 == size){
-            dismissDialog();
-            Log.i(TAG,"connectDevice make Toast");
-            Toast.makeText(this,"Can not find any device ,please retry",Toast.LENGTH_LONG);
-            return;
-        }
-        for (int i = 0; i < size; i++) {
-            HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
-            Log.i(TAG,"connectDevice " + devMap.get(ADDRESS).toString());
-            if(!(boolean)devMap.get(IS_CONNECTED)) {
-                mBleService.connect(devMap.get(ADDRESS).toString());
+        if (mDeviceList != null){
+            showDialog(getResources().getString(R.string.connecting));
+            int size = mDeviceList.size();
+            if(0 == size){
+                dismissDialog();
+                Log.i(TAG,"connectDevice make Toast");
+                Toast.makeText(this,"Can not find any device ,please retry",Toast.LENGTH_LONG);
+                return;
             }
+            for (int i = 0; i < size; i++) {
+                HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
+                Log.i(TAG,"connectDevice " + devMap.get(ADDRESS).toString());
+                if(!(boolean)devMap.get(IS_CONNECTED)) {
+                    mBleService.connect(devMap.get(ADDRESS).toString());
+                }
+            }
+            Log.i(TAG,"connectDevice " + size);
         }
-        Log.i(TAG,"connectDevice " + size);
+
     }
 
     public void updateUI(int status){

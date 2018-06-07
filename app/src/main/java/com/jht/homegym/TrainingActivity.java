@@ -49,17 +49,17 @@ public class TrainingActivity extends Activity {
 
     private final String SELECT_MODE = "select_mode";
 
-    public static final int SERVICE_BIND = 1;
-    public static final int UPDATE_COUNT = 2;
-    public static final int DUMBBELL = 3;
-    public static final int ROPE_SKIP = 4;
-    public static final int HOMEGYM = 5;
-    public static final int TIME_CHANGE = 6;
-    public static final int REQUEST = 7;
-    public static final int RESULT_CONTINUE = 8;
-    public static final int RESULT_FINISH = 9;
+    private static final int SERVICE_BIND = 1;
+    private static final int UPDATE_COUNT = 2;
+    private static final int MSG_DUMBBELL = 3;
+    private static final int MSG_ROPE_SKIP = 4;
+    private static final int MSG_HOMEGYM = 5;
+    private static final int TIME_CHANGE = 6;
+    private static final int REQUEST = 7;
+    private static final int RESULT_CONTINUE = 8;
+    private static final int RESULT_FINISH = 9;
 
-    private int mSelectIndex = -1;
+    private int mSelectIndex;
 
     private TextView mCountDown;
     private RelativeLayout mDumbbellPart;
@@ -75,8 +75,10 @@ public class TrainingActivity extends Activity {
     private String mHomegymAddress;
     private String mAccessoryAddress;
 
-    private long startTime;
+    private long mStartTime = 0L;
+    private long mTotalTime = 0L;
     private Timer mTimer = new Timer();
+    private TimerTask mTimerTask;
 
     private Box<FreeTraining> mFreeTrainingBox;
     private Query<FreeTraining> mFreeTrainingQuery;
@@ -109,7 +111,7 @@ public class TrainingActivity extends Activity {
                 case UPDATE_COUNT:
                     mCountDown.setText(String.valueOf(mDumbbellExerciseCounter));
                     break;
-                case DUMBBELL:
+                case MSG_DUMBBELL:
                     //mCountDown.setText("0");
                     mRopeSkippingPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
                     mDumbbellPart.setBackgroundColor(getResources().getColor(R.color.colorSelectPart));
@@ -119,7 +121,7 @@ public class TrainingActivity extends Activity {
                     mDumbbellValue.setTextColor(getResources().getColor(R.color.colorWhite));
                     setAccessoryMode(Utils.DUMBBELL);
                     break;
-                case ROPE_SKIP:
+                case MSG_ROPE_SKIP:
                     //mCountDown.setText("0");
                     mRopeSkippingPart.setBackgroundColor(getResources().getColor(R.color.colorSelectPart));
                     mDumbbellPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
@@ -129,7 +131,7 @@ public class TrainingActivity extends Activity {
                     mDumbbellValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
                     setAccessoryMode(Utils.ROPE_SKIP);
                     break;
-                case HOMEGYM:
+                case MSG_HOMEGYM:
                     mRopeSkippingPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
                     mDumbbellPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
                     mRopeSkippingPic.setImageDrawable(getResources().getDrawable(R.drawable.training_ropeskipping_nor));
@@ -149,7 +151,7 @@ public class TrainingActivity extends Activity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"onCreate");
         setContentView(R.layout.activity_training);
-        mSelectIndex = getIntent().getIntExtra(SELECT_MODE, -1);
+        mSelectIndex = getIntent().getIntExtra(SELECT_MODE, Utils.HOMEGYM);
         Log.e(TAG,"selectIndex = " + mSelectIndex);
 
         mCountDown = (TextView) findViewById(R.id.count_down);
@@ -163,25 +165,26 @@ public class TrainingActivity extends Activity {
         mRopeSkippingValue = (TextView) findViewById(R.id.rope_skipping_value);
         mDumbbellPart.setOnClickListener(listener);
         mRopeSkippingPart.setOnClickListener(listener);
-        if (mSelectIndex == 0){
-            mHandler.sendEmptyMessage(DUMBBELL);
-        } else if (mSelectIndex == 1){
-            mHandler.sendEmptyMessage(HOMEGYM);
-        } else if (mSelectIndex == 2){
-            mHandler.sendEmptyMessage(ROPE_SKIP);
+        int msg_mode = MSG_HOMEGYM;
+        switch (mSelectIndex) {
+            case Utils.DUMBBELL:
+                msg_mode = MSG_DUMBBELL;
+                break;
+            case Utils.ROPE_SKIP:
+                msg_mode = MSG_ROPE_SKIP;
+                break;
+            case Utils.HOMEGYM:
+                msg_mode = MSG_HOMEGYM;
+                break;
         }
+        mHandler.sendEmptyMessage(mSelectIndex);
 
         mTrainingTime = (TextView) findViewById(R.id.time_value);
-        startTime = SystemClock.elapsedRealtime();
-        TimerTask mTimerTask = new TimerTask() {
+        mStartTime = SystemClock.elapsedRealtime();
+        mTimerTask = new TimerTask() {
             @Override
             public void run() {
-                long time = (SystemClock.elapsedRealtime()- startTime) / 1000;
-                String hh = new DecimalFormat("00").format(time / 3600);
-                String mm = new DecimalFormat("00").format(time % 3600 / 60);
-                String ss = new DecimalFormat("00").format(time % 60);
-                String timeFormat = hh + ":" + mm + ":" + ss;
-                mHandler.sendMessage(mHandler.obtainMessage(TIME_CHANGE, timeFormat));
+                mHandler.sendMessage(mHandler.obtainMessage(TIME_CHANGE, timeReversal(SystemClock.elapsedRealtime()- mStartTime + mTotalTime)));
             }
         };
         mTimer.schedule(mTimerTask, 1000, 1000);
@@ -203,13 +206,13 @@ public class TrainingActivity extends Activity {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.count_down:
-                    mHandler.sendEmptyMessage(HOMEGYM);
+                    mHandler.sendEmptyMessage(MSG_HOMEGYM);
                     break;
                 case R.id.dumbbell_part:
-                    mHandler.sendEmptyMessage(DUMBBELL);
+                    mHandler.sendEmptyMessage(MSG_DUMBBELL);
                     break;
                 case R.id.rope_skipping_part:
-                    mHandler.sendEmptyMessage(ROPE_SKIP);
+                    mHandler.sendEmptyMessage(MSG_ROPE_SKIP);
                     break;
             }
         }
@@ -479,6 +482,8 @@ public class TrainingActivity extends Activity {
             Intent intent = new Intent();
             intent.setClass(TrainingActivity.this, TrainingPauseActivity.class);
             startActivityForResult(intent, REQUEST);
+            mTimer.cancel();
+            mTotalTime = SystemClock.elapsedRealtime() - mStartTime + mTotalTime;
         }
         return true;
     }
@@ -487,13 +492,22 @@ public class TrainingActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode){
             case RESULT_CONTINUE:
-
+                mStartTime = SystemClock.elapsedRealtime();
+                mTimer.schedule(mTimerTask, 1000, 1000);
                 break;
             case RESULT_FINISH:
-
+                timeReversal(mTotalTime);
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private String timeReversal(long time){
+        time = time / 1000;
+        String hh = new DecimalFormat("00").format(time / 3600);
+        String mm = new DecimalFormat("00").format(time % 3600 / 60);
+        String ss = new DecimalFormat("00").format(time % 60);
+        return hh + ":" + mm + ":" + ss;
     }
 
     @Override

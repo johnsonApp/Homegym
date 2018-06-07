@@ -37,7 +37,7 @@ public class FreeModeSelectActivity extends AppCompatActivity{
     private RelativeLayout mHomegym;
     private RelativeLayout mRopeSkip;
 
-    private int mIndex = -1;
+    private int mIndex = Utils.HOMEGYM;
 
     private MyClickListener myClickListener;
 

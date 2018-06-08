@@ -55,7 +55,7 @@
             android:layout_height="match_parent"
             android:textColor="@android:color/black"
             android:textSize="26sp"
-            android:text="Joseph,恭喜你完成了训练，"/>
+            android:text="@string/tips1"/>
 
         <TextView
             android:id="@+id/tips2"
@@ -63,7 +63,7 @@
             android:layout_height="match_parent"
             android:textColor="@color/colorButtonBackground"
             android:textSize="26sp"
-            android:text="距离完美身材又近一步!"/>
+            android:text="@string/tips2"/>
 
     </LinearLayout>
     
@@ -86,7 +86,7 @@
             android:gravity="center_vertical"
             android:textColor="@android:color/black"
             android:textSize="26sp"
-            android:text="核心腹肌，腿部"/>
+            android:text="@string/training_record"/>
 
         <ImageView
             android:id="@+id/chart"
@@ -132,7 +132,7 @@
                 android:layout_marginStart="20dp"
                 android:textColor="@android:color/white"
                 android:textSize="26sp"
-                android:text="耗时"/>
+                android:text="@string/training_time1"/>
 
             <TextView
                 android:id="@+id/bottom1_txt2"
@@ -141,7 +141,7 @@
                 android:textColor="@android:color/white"
                 android:layout_marginStart="10dp"
                 android:textSize="26sp"
-                android:text="00:41:30"/>
+                android:text="00:00:00"/>
 
         </LinearLayout>
 
@@ -168,7 +168,7 @@
                 android:layout_marginStart="20dp"
                 android:textColor="@android:color/white"
                 android:textSize="26sp"
-                android:text="Counts"/>
+                android:text="@string/training_number"/>
 
             <TextView
                 android:id="@+id/bottom2_txt2"
@@ -177,7 +177,7 @@
                 android:textColor="@android:color/white"
                 android:layout_marginStart="10dp"
                 android:textSize="26sp"
-                android:text="123"/>
+                android:text="0"/>
 
         </LinearLayout>
 
@@ -198,52 +198,21 @@
                 android:src="@drawable/up"/>
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textColor="@android:color/white"
+                android:textSize="26sp"
+                android:text="@string/training_resistance"/>
+
+            <TextView
                 android:id="@+id/bottom3_txt1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="10dp"
                 android:textColor="#ffff8e00"
                 android:textSize="26sp"
-                android:text="50"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:text="LBS"/>
-
-            <TextView
-                android:id="@+id/bottom3_txt2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:textColor="@android:color/white"
-                android:textSize="26sp"
-                android:text="30"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:text="LBS"/>
-
-            <TextView
-                android:id="@+id/bottom3_txt3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:textColor="@android:color/white"
-                android:textSize="26sp"
-                android:text="30"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:text="LBS"/>
+                android:text="0"/>
 
         </LinearLayout>
 

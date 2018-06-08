@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:5758908594850461915",
-      "lastPropertyId": "8:4399013765471861636",
+      "lastPropertyId": "9:6200285774037220373",
       "name": "FreeTraining",
       "properties": [
         {
@@ -39,6 +39,10 @@
         {
           "id": "8:4399013765471861636",
           "name": "totalNum"
+        },
+        {
+          "id": "9:6200285774037220373",
+          "name": "level"
         }
       ],
       "relations": []

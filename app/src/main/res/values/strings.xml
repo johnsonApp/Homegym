@@ -28,6 +28,12 @@
     <string name="training_count">Total count:</string>
     <string name="hold_training">Continue Training</string>
     <string name="finish_training">Finish Training</string>
+    <string name="training_record">The exercise records</string>
+    <string name="training_time1">Exercise time</string>
+    <string name="training_number">Exercise number</string>
+    <string name="training_resistance">Exercise Resistance</string>
+    <string name="tips1">Jie,Congratulations on your training,</string>
+    <string name="tips2">one step closer to the perfect body!</string>
 
     <string name="connect_ble_warning">Your APP still not connect to the Homegym</string>
     <string name="connect_ble_warning1">Connect your homegym to start the sport</string>

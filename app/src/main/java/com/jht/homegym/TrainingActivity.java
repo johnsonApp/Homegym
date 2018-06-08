@@ -16,6 +16,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,6 +38,9 @@ import com.jht.homegym.data.ConsoleProgramData;
 import com.jht.homegym.utils.Utils;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -50,16 +55,15 @@ public class TrainingActivity extends Activity {
     private final String SELECT_MODE = "select_mode";
 
     private static final int SERVICE_BIND = 1;
-    private static final int UPDATE_COUNT = 2;
-    private static final int MSG_DUMBBELL = 3;
-    private static final int MSG_ROPE_SKIP = 4;
-    private static final int MSG_HOMEGYM = 5;
+    private static final int UPDATE_HOMEGYM_COUNT = 2;
+    private static final int UPDATE_ACCESSORY_COUNT = 3;
+    private static final int MSG_DUMBBELL = 4;
+    private static final int MSG_ROPE_SKIP = 5;
     private static final int TIME_CHANGE = 6;
     private static final int REQUEST = 7;
     public static final int RESULT_CONTINUE = 8;
     public static final int RESULT_FINISH = 9;
-
-    private int mSelectIndex;
+    private static final int MSG_REQUEST_ACCESSORY_MODE = 10;
 
     private TextView mCountDown;
     private RelativeLayout mDumbbellPart;
@@ -71,6 +75,7 @@ public class TrainingActivity extends Activity {
     private TextView mTrainingTime;
     private TextView mResistanceValue;
     private SeekBar mResistanceBar;
+    private TextView mTotalTrainingValue;
 
     private String mHomegymAddress;
     private String mAccessoryAddress;
@@ -81,7 +86,7 @@ public class TrainingActivity extends Activity {
     private TimerTask mTimerTask;
 
     private Box<FreeTraining> mFreeTrainingBox;
-    private Query<FreeTraining> mFreeTrainingQuery;
+    //private Query<FreeTraining> mFreeTrainingQuery;
 
     private boolean mIsBind;
     private MultipleBleService mBleService;
@@ -89,6 +94,9 @@ public class TrainingActivity extends Activity {
 
     private AccessoryExercise mDumbbellExercise;
     private int mDumbbellExerciseCounter = 0;
+    private int mRopeSkipExerciseCounter = 0;
+    private int mHomegymExerciseCounter = 0;
+    private int mTotalExerciseCounter = 0;
 
     private BluetoothGattCharacteristic mAccessoryReadCharacteristic;
     private BluetoothGattCharacteristic mAccessoryWriteCharacteristic;
@@ -108,36 +116,33 @@ public class TrainingActivity extends Activity {
                     mConnectedDevices = mBleService.getConnectDevices();
                     discoveryServices();
                     break;
-                case UPDATE_COUNT:
-                    mCountDown.setText(String.valueOf(mDumbbellExerciseCounter));
+                case UPDATE_HOMEGYM_COUNT:
+                    mCountDown.setText(String.valueOf(mHomegymExerciseCounter));
+                    break;
+                case UPDATE_ACCESSORY_COUNT:
+                    mDumbbellValue.setText(String.valueOf(mDumbbellExerciseCounter));
+                    //mRopeSkippingValue.setText(String.valueOf(mRopeSkipExerciseCounter));
                     break;
                 case MSG_DUMBBELL:
-                    //mCountDown.setText("0");
-                    mRopeSkippingPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
                     mDumbbellPart.setBackgroundColor(getResources().getColor(R.color.colorSelectPart));
-                    mRopeSkippingPic.setImageDrawable(getResources().getDrawable(R.drawable.training_ropeskipping_nor));
+                    mRopeSkippingPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
                     mDumbbellPic.setImageDrawable(getResources().getDrawable(R.drawable.training_dumbbell_sel));
-                    mRopeSkippingValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
+                    mRopeSkippingPic.setImageDrawable(getResources().getDrawable(R.drawable.training_ropeskipping_nor));
                     mDumbbellValue.setTextColor(getResources().getColor(R.color.colorWhite));
+                    mRopeSkippingValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
                     setAccessoryMode(Utils.DUMBBELL);
                     break;
                 case MSG_ROPE_SKIP:
-                    //mCountDown.setText("0");
-                    mRopeSkippingPart.setBackgroundColor(getResources().getColor(R.color.colorSelectPart));
                     mDumbbellPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
-                    mRopeSkippingPic.setImageDrawable(getResources().getDrawable(R.drawable.training_ropeskipping_sel));
+                    mRopeSkippingPart.setBackgroundColor(getResources().getColor(R.color.colorSelectPart));
                     mDumbbellPic.setImageDrawable(getResources().getDrawable(R.drawable.training_dumbbell_nor));
-                    mRopeSkippingValue.setTextColor(getResources().getColor(R.color.colorWhite));
+                    mRopeSkippingPic.setImageDrawable(getResources().getDrawable(R.drawable.training_ropeskipping_sel));
                     mDumbbellValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
+                    mRopeSkippingValue.setTextColor(getResources().getColor(R.color.colorWhite));
                     setAccessoryMode(Utils.ROPE_SKIP);
                     break;
-                case MSG_HOMEGYM:
-                    mRopeSkippingPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
-                    mDumbbellPart.setBackgroundColor(getResources().getColor(R.color.colorBlack));
-                    mRopeSkippingPic.setImageDrawable(getResources().getDrawable(R.drawable.training_ropeskipping_nor));
-                    mDumbbellPic.setImageDrawable(getResources().getDrawable(R.drawable.training_dumbbell_nor));
-                    mRopeSkippingValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
-                    mDumbbellValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
+                case MSG_REQUEST_ACCESSORY_MODE:
+
                     break;
                 case TIME_CHANGE:
                     mTrainingTime.setText(String.valueOf(msg.obj));
@@ -151,35 +156,38 @@ public class TrainingActivity extends Activity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"onCreate");
         setContentView(R.layout.activity_training);
-        mSelectIndex = getIntent().getIntExtra(SELECT_MODE, Utils.HOMEGYM);
-        Log.e(TAG,"selectIndex = " + mSelectIndex);
-
         mCountDown = (TextView) findViewById(R.id.count_down);
-        mCountDown.setOnClickListener(listener);
-
         mDumbbellPart = (RelativeLayout) findViewById(R.id.dumbbell_part);
         mRopeSkippingPart = (RelativeLayout) findViewById(R.id.rope_skipping_part);
         mDumbbellPic = (ImageView) findViewById(R.id.dumbbell_pic);
         mRopeSkippingPic = (ImageView) findViewById(R.id.rope_skipping_pic);
         mDumbbellValue = (TextView) findViewById(R.id.dumbbell_value);
         mRopeSkippingValue = (TextView) findViewById(R.id.rope_skipping_value);
+        mTotalTrainingValue = (TextView) findViewById(R.id.count_value);
+        mTrainingTime = (TextView) findViewById(R.id.time_value);
+        mResistanceValue = (TextView) findViewById(R.id.weight_value);
+        mResistanceBar = (SeekBar) findViewById(R.id.resistance_bar);
         mDumbbellPart.setOnClickListener(listener);
         mRopeSkippingPart.setOnClickListener(listener);
-        int msg_mode = MSG_HOMEGYM;
-        switch (mSelectIndex) {
+        mCountDown.addTextChangedListener(textWatcher);
+        mDumbbellValue.addTextChangedListener(textWatcher);
+        mRopeSkippingValue.addTextChangedListener(textWatcher);
+        mResistanceBar.setOnSeekBarChangeListener(resistanceListener);
+
+        int selectIndex = getIntent().getIntExtra(SELECT_MODE, Utils.HOMEGYM);
+        Log.e(TAG,"selectIndex = " + selectIndex);
+        switch (selectIndex) {
             case Utils.DUMBBELL:
-                msg_mode = MSG_DUMBBELL;
+                mHandler.sendEmptyMessage(MSG_DUMBBELL);
                 break;
             case Utils.ROPE_SKIP:
-                msg_mode = MSG_ROPE_SKIP;
+                mHandler.sendEmptyMessage(MSG_ROPE_SKIP);
                 break;
-            case Utils.HOMEGYM:
-                msg_mode = MSG_HOMEGYM;
+            default:
+                mHandler.sendEmptyMessage(MSG_REQUEST_ACCESSORY_MODE);
                 break;
         }
-        mHandler.sendEmptyMessage(mSelectIndex);
 
-        mTrainingTime = (TextView) findViewById(R.id.time_value);
         mStartTime = SystemClock.elapsedRealtime();
         mTimer = new Timer();
         mTimerTask = new TimerTask() {
@@ -189,13 +197,10 @@ public class TrainingActivity extends Activity {
             }
         };
         mTimer.schedule(mTimerTask, 1000, 1000);
-        mResistanceValue = (TextView) findViewById(R.id.weight_value);
-        mResistanceBar = (SeekBar) findViewById(R.id.resistance_bar);
-        mResistanceBar.setOnSeekBarChangeListener(resistanceListener);
 
         //ObjectBox manage the database
         mFreeTrainingBox = ((HomegymApplication) getApplication()).getBoxStore().boxFor(FreeTraining.class);
-        mFreeTrainingQuery = mFreeTrainingBox.query().build();
+        //mFreeTrainingQuery = mFreeTrainingBox.query().build();
         //List<FreeTraining> listFreeTraining = mFreeTrainingQuery.find();
 
         mDumbbellExercise = new AccessoryExercise();
@@ -206,9 +211,6 @@ public class TrainingActivity extends Activity {
         @Override
         public void onClick(View v) {
             switch (v.getId()){
-                case R.id.count_down:
-                    mHandler.sendEmptyMessage(MSG_HOMEGYM);
-                    break;
                 case R.id.dumbbell_part:
                     mHandler.sendEmptyMessage(MSG_DUMBBELL);
                     break;
@@ -237,7 +239,23 @@ public class TrainingActivity extends Activity {
         }
     };
 
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            mTotalExerciseCounter = mDumbbellExerciseCounter + mRopeSkipExerciseCounter + mHomegymExerciseCounter;
+            mTotalTrainingValue.setText(String.valueOf(mTotalExerciseCounter));
+        }
+    };
 
     public void onStop(){
         super.onStop();
@@ -346,8 +364,8 @@ public class TrainingActivity extends Activity {
                     }
                     if(null != mHomegymWriteCharacteristic) {
                         Log.d(TAG,"find mHomegymWriteCharacteristic");
-                        byte[] data = BLECommand.getParameter(BLECommand.GET_PARAMETER_BATTERY);
-                        //byte[] data = BLECommand.getParameter(BLECommand.GET_PARAMETER_PROGRAM_DATA);
+                        //byte[] data = BLECommand.getParameter(BLECommand.GET_PARAMETER_BATTERY);
+                        byte[] data = BLECommand.getParameter(BLECommand.GET_PARAMETER_PROGRAM_DATA);
                         logData(data);
                         boolean result = mBleService.writeCharacteristic(address, Utils.HOMEGYM_BASE_UUID,
                         Utils.HOMEGYM_WRITE_UUID, data);
@@ -367,7 +385,7 @@ public class TrainingActivity extends Activity {
             @Override
             public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
                 Log.d(TAG,"some thing changed ");
-                logData(characteristic.getValue());
+                //logData(characteristic.getValue());
                 if(characteristic.equals(mHomegymReadCharacteristic)){
                     byte[] data = mHomegymReadCharacteristic.getValue();
                     logData(data);
@@ -380,14 +398,14 @@ public class TrainingActivity extends Activity {
                         }
                     }
                 }
-                if (characteristic.equals(mRawDataCharacteristic)) {
+                /*if (characteristic.equals(mRawDataCharacteristic)) {
                     boolean isChanege = getDeviceValue(characteristic);
                     Log.d(TAG, "onCharacteristicChanged " + characteristic + "   " + (characteristic.equals(mRawDataCharacteristic))
                     + " isChange " + isChanege + " dumbbell " + mDumbbellExerciseCounter);
                     if(isChanege){
                         mHandler.sendEmptyMessage(UPDATE_COUNT);
                     }
-                }
+                }*/
 
             }
 
@@ -444,7 +462,7 @@ public class TrainingActivity extends Activity {
                 mBleService.readCharacteristic(address, readCharacteristic);
                 mBleService.setCharacteristicNotification(address,readCharacteristic,true);
             }
-        }, 300);
+        }, 400);
     }
 
     private boolean setAccessoryMode(int mode) {
@@ -474,7 +492,6 @@ public class TrainingActivity extends Activity {
                 boolean result = mBleService.discoverServices(device.getAddress());
             }
         }
-
     }
 
     @Override
@@ -505,7 +522,20 @@ public class TrainingActivity extends Activity {
                 mTimer.schedule(mTimerTask, 1000, 1000);
                 break;
             case RESULT_FINISH:
-                timeReversal(mTotalTime);
+                FreeTraining freeTraining = new FreeTraining();
+                freeTraining.setUserId(1);
+                freeTraining.setCurTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis())));
+                freeTraining.setTotalTime((int)(mTotalTime / 1000));
+                freeTraining.setDumbbellNum(mDumbbellExerciseCounter);
+                freeTraining.setSkipRopeNum(mRopeSkipExerciseCounter);
+                freeTraining.setPullRopeNum(mHomegymExerciseCounter);
+                freeTraining.setTotalNum(mTotalExerciseCounter);
+                freeTraining.setLevel(mResistanceBar.getProgress());
+                long id = mFreeTrainingBox.put(freeTraining);
+                Intent intent = new Intent(TrainingActivity.this, SummaryActivity.class);
+                intent.putExtra("TRAINING_ID", id);
+                startActivity(intent);
+                finish();
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -541,10 +571,14 @@ public class TrainingActivity extends Activity {
             case BLECommand.GET_PARAMETER_PROGRAM_DATA:
                 int programMode = data[1];
                 if(BLECommand.PROGRAM_MODE_CONCOLE == programMode){
+                    logData(data);
                     ConsoleProgramData programData = new ConsoleProgramData(data);
                     if(null != programData) {
                         Log.d(TAG,"updateReplyMessage Resistance " +  programData.getResistance());
                         mResistanceBar.setProgress(programData.getResistance());
+                        mHomegymExerciseCounter = programData.getTimes();
+                        Log.d(TAG,"updateReplyMessage Times = " +  mHomegymExerciseCounter);
+                        mHandler.sendEmptyMessage(UPDATE_HOMEGYM_COUNT);
                     }
                 }else if(BLECommand.PROGRAM_MODE_ACCESSORY == programMode) {
                     AccessoryData accessoryData = new AccessoryData(data);

@@ -31,7 +31,7 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BleActivity extends AppCompatActivity {
-    private static final String TAG = "ConnectBleActivity";
+    private static final String TAG = "BleActivity";
 
     private static final int RETRY_TIME = 3;//3;
     private static final String THINGYNAME = "Thingy";
@@ -112,6 +112,7 @@ public class BleActivity extends AppCompatActivity {
                     if(Utils.handleVersionPermission(BleActivity.this)){
                         List<BluetoothDevice> list = mBleService.getConnectDevices();
                         if (list == null || list.size() == 0){
+                            //Log.d(TAG,"onServiceConnected address " + list.get(0).getAddress());
                             if (mDeviceList == null || mDeviceList.size() == 0) {
                                 setScan(true);
                             } else {

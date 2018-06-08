@@ -16,22 +16,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HomePageActivity">
+        <activity android:name=".HomePageActivity" android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FreeModeTrainingActivity" />
-        <activity android:name=".FreeModeSelectActivity" />
-        <activity android:name=".ConnectBleActivity" />
-        <activity android:name=".CountdownActivity" />
-        <activity android:name=".TrainingActivity" />
-
-        <service android:name=".ble.MultipleBleService" />
-
-        <activity android:name=".TrainingPauseActivity"></activity>
+        <activity android:name=".FreeModeTrainingActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".FreeModeSelectActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".ConnectBleActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".CountdownActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".SummaryActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".TrainingActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".TrainingPauseActivity" android:screenOrientation="landscape"/>
+        <service android:name=".ble.MultipleBleService"/>
     </application>
 
 </manifest>

@@ -16,6 +16,12 @@
     <string name="training_count">總計數：</string>
     <string name="hold_training">繼續訓練</string>
     <string name="finish_training">結束訓練</string>
+    <string name="training_record">本次運動記錄</string>
+    <string name="training_time1">運動時間</string>
+    <string name="training_number">總計數</string>
+    <string name="training_resistance">阻力值</string>
+    <string name="tips1">阿傑，恭喜你完成了訓練，</string>
+    <string name="tips2">距離完美身材又近了一步！</string>
 
     <string name="connect_ble_warning">您沒有連接Homegym設備</string>
     <string name="connect_ble_warning1">現在連接您的設備開始專業的健身</string>

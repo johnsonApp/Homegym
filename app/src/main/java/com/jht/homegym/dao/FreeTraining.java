@@ -1,5 +1,8 @@
 package com.jht.homegym.dao;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 
@@ -9,16 +12,17 @@ public class FreeTraining {
     private long id;
     private long userId;
     private String curTime;
-    private String totalTime;
+    private int totalTime;
     private int pullRopeNum;
     private int skipRopeNum;
     private int dumbbellNum;
     private int totalNum;
+    private int level;
 
     public FreeTraining() {
     }
 
-    public FreeTraining(long id, long userId, String curTime, String totalTime, int pullRopeNum, int skipRopeNum, int dumbbellNum, int totalNum) {
+    public FreeTraining(long id, long userId, String curTime, int totalTime, int pullRopeNum, int skipRopeNum, int dumbbellNum, int totalNum, int level) {
         this.id = id;
         this.userId = userId;
         this.curTime = curTime;
@@ -27,6 +31,7 @@ public class FreeTraining {
         this.skipRopeNum = skipRopeNum;
         this.dumbbellNum = dumbbellNum;
         this.totalNum = totalNum;
+        this.level = level;
     }
 
     @Override
@@ -40,6 +45,7 @@ public class FreeTraining {
                 ", skipRopeNum=" + skipRopeNum +
                 ", dumbbellNum=" + dumbbellNum +
                 ", totalNum=" + totalNum +
+                ", level=" + level +
                 '}';
     }
 
@@ -67,11 +73,11 @@ public class FreeTraining {
         this.curTime = curTime;
     }
 
-    public String getTotalTime() {
+    public int getTotalTime() {
         return totalTime;
     }
 
-    public void setTotalTime(String totalTime) {
+    public void setTotalTime(int totalTime) {
         this.totalTime = totalTime;
     }
 
@@ -105,5 +111,13 @@ public class FreeTraining {
 
     public void setTotalNum(int totalNum) {
         this.totalNum = totalNum;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }

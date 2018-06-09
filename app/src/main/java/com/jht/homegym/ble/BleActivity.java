@@ -34,13 +34,14 @@ public class BleActivity extends AppCompatActivity {
     private static final String TAG = "BleActivity";
 
     private static final int RETRY_TIME = 3;//3;
-    private static final String THINGYNAME = "Thingy";
+    private static final int RETRY_HOMEGYM_TIME = 1;
+    private static final String THINGYNAME = "HomeGYM Accessory";
     private static final String HOMEGYEMNAME = "HomeGYM Console";
     private static final String ADDRESS = "address";
     private static final String DEVICE_NAME ="name";
     private static final String IS_CONNECTED ="isConnect";
 
-    private UUID[] AccessoryUUID = {Utils.THINGY_BASE_UUID};
+    private UUID[] AccessoryUUID = {Utils.ACCESSORY_BASE_UUID};
     private UUID[] HomegymUUID = {Utils.HOMEGYM_BASE_UUID};
 
     public static final int SERVICE_BIND = 1;
@@ -94,8 +95,8 @@ public class BleActivity extends AppCompatActivity {
                     dismissDialog();
                     connectDevice();
                 }else {
-                    setScan(true);
                     mRetryTime ++;
+                    setScan(true);
                 }
             }
         }
@@ -199,10 +200,16 @@ public class BleActivity extends AppCompatActivity {
         if (scan && mBleService.isScanning()) {
             mBleService.scanLeDevice(false);
         }
-        if(!mIsHomegymScan){
+        Log.d(TAG,"setScan " + mRetryTime);
+        if(!mIsHomegymScan && mRetryTime < RETRY_HOMEGYM_TIME){
             mBleService.scanLeDevice(scan,HomegymUUID);
         }else if(!mIsThingyScan){
             mBleService.scanLeDevice(scan, AccessoryUUID);
+        }
+
+        if(!mBleService.isScanning()){
+            dismissDialog();
+            connectDevice();
         }
         //mConnect.setEnabled(!scan);
     }
@@ -277,6 +284,9 @@ public class BleActivity extends AppCompatActivity {
         for (int i = 0; i < size; i++) {
             HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
             String name = (String )(devMap.get(DEVICE_NAME));
+            if(null == name){
+                return;
+            }
             if(name.equals(HOMEGYEMNAME)){
                 mIsHomegymScan = true;
             }else if(name.equals(THINGYNAME)){

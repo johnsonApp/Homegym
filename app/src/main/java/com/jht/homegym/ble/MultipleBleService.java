@@ -57,7 +57,7 @@ public class MultipleBleService extends Service implements Constants, BleListene
     private boolean mIsScanning;
     private List<String> mConnectedAddressList;//Already connected remote device address
     //Stop scanning after 10 seconds.
-    private static final long SCAN_PERIOD = 10 * 1000;
+    private static final long SCAN_PERIOD = 6 * 1000;
     private static final int MAX_CONNECT_NUM = 16;//Can connect remote device max number.
 
     private OnLeScanListener mOnLeScanListener;
@@ -186,6 +186,7 @@ public class MultipleBleService extends Service implements Constants, BleListene
                     /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         mBluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
                     } else {*/
+                    Log.d(TAG,"scanLeDevice  need stop Scan");
                         mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     //}
                     broadcastUpdate(ACTION_SCAN_FINISHED);
@@ -465,11 +466,19 @@ public class MultipleBleService extends Service implements Constants, BleListene
         descriptor.setValue(enabled ? BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE :
                 BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
         mBluetoothGattMap.get(address).writeDescriptor(descriptor);*/
-
-        for(BluetoothGattDescriptor dp:characteristic.getDescriptors()){
+        if(result) {
+            List<BluetoothGattDescriptor> descriptorList = characteristic.getDescriptors();
+            if(descriptorList != null && descriptorList.size() > 0) {
+                for(BluetoothGattDescriptor descriptor : descriptorList) {
+                    descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                    mBluetoothGattMap.get(address).writeDescriptor(descriptor);
+                }
+            }
+        }
+        /*for(BluetoothGattDescriptor dp:characteristic.getDescriptors()){
             dp.setValue(enabled ? BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE : BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE);
             mBluetoothGattMap.get(address).writeDescriptor(dp);
-        }
+        }*/
     }
 
     /**

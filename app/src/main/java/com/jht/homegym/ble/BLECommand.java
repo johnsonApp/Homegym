@@ -153,13 +153,33 @@ public class BLECommand {
     public static byte[] unpacketReplyParameter(byte[] data){
         byte[] value = unpacketParameter(data);
         if(null != value && value.length > 1){
-            /*byte[] result = new byte[value.length - 1];
-            for(int i = 0; i < value.length - 1; i++){
-                result[i] = value[i];
-            }*/
             return value;
         }
         return null;
+    }
+
+    public static int getSensorDataMode(byte[] data){
+        byte[] value = unpacketParameter(data);
+        return (value[0] & 0xFF);
+    }
+
+    public static float[] unpacketSensorData(byte[] data){
+        byte[] value = unpacketParameter(data);
+        if(ACCESSORY_SENSOR_LENGTH  != value.length){
+            Log.d(TAG,"accessory sensor data is invaild");
+            return null;
+        }
+        final int xyz = 3;
+        float[] sensor = new float[xyz];
+        int i = 1, j = 0;
+        while(i < ACCESSORY_SENSOR_LENGTH){
+            sensor[j] = bytesToFloat(value, i);
+            Log.d(TAG,"unpacketSensorData sensor " + sensor[j] + " i " + i  + " j " + j);
+            i += 4;
+            j++;
+        }
+        Log.d(TAG,"unpacketSensorData return sensor");
+        return sensor;
     }
 
     public static int getPacketMode(byte[] data){
@@ -168,10 +188,10 @@ public class BLECommand {
             return INVAILD_DATA;
         }
         int length = data.length;
-        /*if(data[0] != PACKET_START){
+        if(data[0] != PACKET_START){
             Log.d(TAG,"data start value wrong");
             return INVAILD_DATA;
-        }*/
+        }
 
         int crcValue = CrcUtils.calcCrc8(data,length - 1);
         int crcData = data[length - 1] & 0xFF;
@@ -192,10 +212,17 @@ public class BLECommand {
         int length = data.length;
         int dataLength = data[1];
         byte[] value = new byte[dataLength];
-        for(int i = 3; i < length - 1; i++){
+        for(int i = 3; i < dataLength + 3; i++){
             value[i - 3] = data[i];
         }
         return value;
+    }
+
+    public static float bytesToFloat(byte[] src, int start) {
+        int value;
+        value = (src[start] & 0xFF) | ((src[start + 1] & 0xFF) << 8) |
+                ((src[start + 2] & 0xFF) << 16) | ((src[start + 3] & 0xFF) << 24);
+        return Float.intBitsToFloat(value);
     }
 
     public static void logData(byte[] data){

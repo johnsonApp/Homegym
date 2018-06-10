@@ -121,10 +121,12 @@ public class BleActivity extends AppCompatActivity {
                             }
                         }
                     }
-                    Toast.makeText(BleActivity.this, "Bluetooth was opened", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Bluetooth was opened");
+                    //Toast.makeText(BleActivity.this, "Bluetooth was opened", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(BleActivity.this, "not support Bluetooth", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "not support Bluetooth");
+                //Toast.makeText(BleActivity.this, "not support Bluetooth", Toast.LENGTH_SHORT).show();
             }
         }
 

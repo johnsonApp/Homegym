@@ -30,7 +30,7 @@
             android:layout_height="96px"
             android:layout_alignParentRight="true"
             android:layout_marginRight="18dp"
-            android:text="@string/unconnect_status"
+            android:text="@string/ble_unconnect"
             android:textColor="@color/colorWhite"
             android:textSize="11sp"
             android:background="@drawable/unconnect"

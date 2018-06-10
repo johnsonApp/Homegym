@@ -40,6 +40,6 @@
         android:layout_marginTop="30dp"
         android:textColor="@android:color/black"
         android:textSize="26sp"
-        android:text="FREE MODE不计入POWER" />
+        android:text="@string/count_down_tips" />
 
 </RelativeLayout>

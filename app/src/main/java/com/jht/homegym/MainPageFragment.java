@@ -73,7 +73,7 @@ public class MainPageFragment extends Fragment {
         /* Inflate the layout for this fragment */
         View view = inflater.inflate(R.layout.fragment1_layout, container, false);
 
-        ImageView free_mode = (ImageView) view.findViewById(R.id.free_mode);
+        TextView free_mode = (TextView) view.findViewById(R.id.free_mode);
         free_mode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

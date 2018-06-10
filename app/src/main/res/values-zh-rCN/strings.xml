@@ -13,6 +13,7 @@
     <string name="start_training">开始训练</string>
     <string name="hold_on">坚持住！</string>
     <string name="training_time">运动时长：</string>
+    <string name="weight_level">级</string>
     <string name="training_count">总计数：</string>
     <string name="hold_training">继续训练</string>
     <string name="finish_training">结束训练</string>
@@ -22,6 +23,17 @@
     <string name="training_resistance">阻力值</string>
     <string name="tips1">阿杰，恭喜你完成了训练，</string>
     <string name="tips2">距离完美身材又近了一步！</string>
+    <string name="count_down_tips">自由训练不计入总成绩。</string>
+    <string name="home_page">主页</string>
+    <string name="user_center">个人中心</string>
+    <string name="user_custom">量身定制</string>
+    <string name="user_challenge">挑战自己</string>
+    <string name="user_club">俱乐部</string>
+    <string name="ble_connected">已连接</string>
+    <string name="ble_unconnect">未连接</string>
+    <string name="make_plan">定制你的健身计划</string>
+    <string name="welcome_tips">你好阿杰，欢迎加入乔山健身！</string>
+    <string name="free_training">进行自由训练 >>></string>
 
     <string name="connect_ble_warning">您沒有连接Homegym设备</string>
     <string name="connect_ble_warning1">现在连接您的设备开始专业的健身</string>

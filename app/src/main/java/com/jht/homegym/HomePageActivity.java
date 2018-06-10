@@ -261,12 +261,12 @@ public class HomePageActivity extends BleActivity implements View.OnClickListene
                         if(mIsConnected != mConnectedStatus){
                             mConnectedStatus = mIsConnected;
                             if(mIsConnected){
-                                mConnectStatus.setText(activity.getResources().getString(R.string.connected_status));
+                                mConnectStatus.setText(activity.getResources().getString(R.string.ble_connected));
                                 Drawable drawable = getResources().getDrawable(R.drawable.ble_connect, null);
                                 drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                                 mConnectStatus.setCompoundDrawablesRelative(drawable, null, null, null);
                             }else {
-                                mConnectStatus.setText(activity.getResources().getString(R.string.unconnect_status));
+                                mConnectStatus.setText(activity.getResources().getString(R.string.ble_unconnect));
                                 Drawable drawable = getResources().getDrawable(R.drawable.ble_unconnect, null);
                                 drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                                 mConnectStatus.setCompoundDrawablesRelative(drawable, null, null, null);

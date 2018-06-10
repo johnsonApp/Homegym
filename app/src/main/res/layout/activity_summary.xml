@@ -14,7 +14,7 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="30dp"
         android:scaleType="fitXY"
-        android:src="@drawable/homepage_black"/>
+        android:src="@drawable/homepage"/>
 
     <ImageView
         android:id="@+id/user_pic"
@@ -87,16 +87,6 @@
             android:textColor="@android:color/black"
             android:textSize="26sp"
             android:text="@string/training_record"/>
-
-        <ImageView
-            android:id="@+id/chart"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="50dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/emoji2"/>
 
     </RelativeLayout>
 

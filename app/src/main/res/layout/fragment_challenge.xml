@@ -10,24 +10,27 @@
         android:orientation="vertical">
     <!-- TODO: Update blank fragment layout -->
     <ImageView
-        android:layout_marginTop="3dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="170dp"
         android:src="@drawable/challenge_1"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
         android:scaleType="fitXY"
         />
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_height="170dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
         android:src="@drawable/challenge_2"
         android:scaleType="fitXY"
         />
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_height="170dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
         android:src="@drawable/challenge_3"
         android:scaleType="fitXY"
         />

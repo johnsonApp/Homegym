@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Homegym</string>
-    <string name="unconnect_status">unconnect</string>
-    <string name="connected_status">connected</string>
     <string name="homepage_info1">Hello,Joseph</string>
     <string name="homepage_info2">things look very good</string>
     <string name="homepage_info3">keep it!</string>
@@ -25,6 +23,7 @@
     <string name="rope_skipping">rope skipping</string>
     <string name="hold_on">Keep holding on!</string>
     <string name="training_time">Training time:</string>
+    <string name="weight_level">LEVEL</string>
     <string name="training_count">Total count:</string>
     <string name="hold_training">Continue Training</string>
     <string name="finish_training">Finish Training</string>
@@ -34,6 +33,17 @@
     <string name="training_resistance">Exercise Resistance</string>
     <string name="tips1">Jie,Congratulations on your training,</string>
     <string name="tips2">one step closer to the perfect body!</string>
+    <string name="count_down_tips">Free mode is not included in the total score.</string>
+    <string name="home_page">Home</string>
+    <string name="user_center">UserCenter</string>
+    <string name="user_custom">Customization</string>
+    <string name="user_challenge">Challenge</string>
+    <string name="user_club">Club</string>
+    <string name="ble_connected">CONNECTED</string>
+    <string name="ble_unconnect">UNCONNECT</string>
+    <string name="make_plan">Customize your fitness plan</string>
+    <string name="welcome_tips">Hello,Jie,Welcome to Johnson fitness club.</string>
+    <string name="free_training">Go on free training >>></string>
 
     <string name="connect_ble_warning">Your APP still not connect to the Homegym</string>
     <string name="connect_ble_warning1">Connect your homegym to start the sport</string>

@@ -33,7 +33,7 @@
             android:background="@color/colorButtonSelected"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
-            android:text="主页"/>
+            android:text="@string/home_page"/>
 
         <TextView
             android:id="@+id/use_center"
@@ -45,7 +45,7 @@
             android:gravity="center"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
-            android:text="个人中心"/>
+            android:text="@string/user_center"/>
 
         <TextView
             android:id="@+id/custom_made"
@@ -57,7 +57,7 @@
             android:gravity="center"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
-            android:text="量身订制"/>
+            android:text="@string/user_custom"/>
 
         <TextView
             android:id="@+id/challenge"
@@ -69,7 +69,7 @@
             android:gravity="center"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
-            android:text="挑战自己"/>
+            android:text="@string/user_challenge"/>
 
         <TextView
             android:id="@+id/club"
@@ -81,7 +81,7 @@
             android:gravity="center"
             android:textColor="@color/colorWhite"
             android:textSize="20sp"
-            android:text="俱乐部"/>
+            android:text="@string/user_club"/>
 
         <TextView
             android:id="@+id/connect_status"
@@ -93,7 +93,7 @@
             android:drawableStart="@drawable/ble_unconnect"
             android:textColor="@android:color/white"
             android:textSize="20sp"
-            android:text="UNCONNECT"/>
+            android:text="@string/ble_unconnect"/>
 
     </RelativeLayout>
 

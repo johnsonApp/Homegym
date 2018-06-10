@@ -36,7 +36,6 @@ public class CountdownActivity extends Activity {
                 if (msg.what == 0){
                     activity.mCountDown.setText(String.valueOf(--activity.mCurValue));
                     if (activity.mCurValue == 0){
-                        activity.mTimer.cancel();
                         CountdownActivity.this.finish();
                         //倒计时结束进入锻炼页面
                         mIntent.setClass(CountdownActivity.this, TrainingActivity.class);
@@ -72,4 +71,11 @@ public class CountdownActivity extends Activity {
             }
         }
     };
+
+    @Override
+    public void finish() {
+        mTimer.cancel();
+        mTimer.purge();
+        super.finish();
+    }
 }

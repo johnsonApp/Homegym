@@ -89,6 +89,7 @@ public class FreeModeSelectActivity extends AppCompatActivity{
                 intent.setClass(FreeModeSelectActivity.this, CountdownActivity.class);
                 intent.putExtra(SELECT_MODE, mIndex);
                 startActivity(intent);
+                FreeModeSelectActivity.this.finish();
             } else {
                 switch (mIndex){
                     case Utils.DUMBBELL:

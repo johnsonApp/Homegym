@@ -16,7 +16,7 @@
         android:layout_marginTop="30dp"
         android:textColor="@color/colorWhite"
         android:textSize="36sp"
-        android:text="Free mode"/>
+        android:text="@string/free_mode"/>
 
     <TextView
         android:id="@+id/keep"
@@ -186,7 +186,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorWhite"
                     android:textSize="20sp"
-                    android:text="LEVEL"/>
+                    android:text="@string/weight_level"/>
 
             </LinearLayout>
 

@@ -31,18 +31,18 @@ public class UserCenterFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_center, container, false);
-        LineChart mLineChart = (LineChart) view.findViewById(R.id.line_chart);
+        //LineChart mLineChart = (LineChart) view.findViewById(R.id.line_chart);
         //显示边界
-        mLineChart.setDrawBorders(true);
+        //mLineChart.setDrawBorders(true);
         //设置数据
-        ArrayList<Entry> entries = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            entries.add(new Entry(i, (float) (Math.random()) * 80));
-        }
+        //ArrayList<Entry> entries = new ArrayList<>();
+        //for (int i = 0; i < 10; i++) {
+        //    entries.add(new Entry(i, (float) (Math.random()) * 80));
+        //}
         //一个LineDataSet就是一条线
-        LineDataSet lineDataSet = new LineDataSet(entries, "Training");
-        LineData data = new LineData(lineDataSet);
-        mLineChart.setData(data);
+        //LineDataSet lineDataSet = new LineDataSet(entries, "Training");
+        //LineData data = new LineData(lineDataSet);
+        //mLineChart.setData(data);
         return view;
     }
 

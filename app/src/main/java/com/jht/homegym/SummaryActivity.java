@@ -29,12 +29,10 @@ public class SummaryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
         mHomePage = (ImageView) findViewById(R.id.home_pic);
-        mUserCenter = (ImageView) findViewById(R.id.user_pic);
         mTrainingTime = (TextView) findViewById(R.id.bottom1_txt2);
         mTrainingNum = (TextView) findViewById(R.id.bottom2_txt2);
         mTrainingResistance = (TextView) findViewById(R.id.bottom3_txt1);
         mHomePage.setOnClickListener(listener);
-        mUserCenter.setOnClickListener(listener);
         //ObjectBox manage the database
         long queryID = getIntent().getLongExtra("TRAINING_ID", 1L);
         mFreeTrainingBox = ((HomegymApplication) getApplication()).getBoxStore().boxFor(FreeTraining.class);
@@ -55,13 +53,6 @@ public class SummaryActivity extends Activity {
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            switch (v.getId()){
-//                case R.id.home_pic:
-//                    startActivity(new Intent(SummaryActivity.this, HomePageActivity.class));
-//                    break;
-//                case R.id.user_pic:
-//                    break;
-//            }
             finish();
         }
     };

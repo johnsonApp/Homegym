@@ -44,6 +44,8 @@
     <string name="make_plan">Customize your fitness plan</string>
     <string name="welcome_tips">Hello,Jie,Welcome to Johnson fitness club.</string>
     <string name="free_training">Go on free training >>></string>
+    <string name="add_plan">Add Plan</string>
+    <string name="minutes">minutes</string>
 
     <string name="connect_ble_warning">Your APP still not connect to the Homegym</string>
     <string name="connect_ble_warning1">Connect your homegym to start the sport</string>

@@ -34,6 +34,8 @@
     <string name="make_plan">定制你的健身計劃</string>
     <string name="welcome_tips">你好阿傑，歡迎加入喬山健身！</string>
     <string name="free_training">進行自由訓練 >>></string>
+    <string name="add_plan">添加計劃</string>
+    <string name="minutes">分鐘</string>
 
     <string name="connect_ble_warning">您沒有連接Homegym設備</string>
     <string name="connect_ble_warning1">現在連接您的設備開始專業的健身</string>

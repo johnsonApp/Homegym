@@ -20,7 +20,7 @@ public class CrcUtils {
     public static int calcCrc8(byte[] data, int offset, int len, byte preval) {
         short crcCheckTemp,crcHalf,checkdata = 0;
         for (int i = offset; i < (offset + len); i++) {
-            crcCheckTemp = data[i];
+            crcCheckTemp = (short)(data[i] & 0xff);
             crcHalf = (short)((checkdata/16) & 0xff);
             checkdata = (short)((checkdata  << 4) & 0xff);
             checkdata = (short)((checkdata ^ crcTab[crcHalf ^ (crcCheckTemp/16)]) & 0xff);

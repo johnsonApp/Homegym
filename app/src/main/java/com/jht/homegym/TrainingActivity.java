@@ -141,6 +141,7 @@ public class TrainingActivity extends Activity {
                     mRopeSkippingValue.setTextColor(getResources().getColor(R.color.colorTextUnSelect));
                     if(Utils.DUMBBELL != mAccessoryMode) {
                         setAccessoryMode(Utils.DUMBBELL);
+                        mAccessoryMode = Utils.DUMBBELL;
                     }
                     break;
                 case MSG_ROPE_SKIP:
@@ -152,6 +153,7 @@ public class TrainingActivity extends Activity {
                     mRopeSkippingValue.setTextColor(getResources().getColor(R.color.colorWhite));
                     if(Utils.ROPE_SKIP != mAccessoryMode) {
                         setAccessoryMode(Utils.ROPE_SKIP);
+                        mAccessoryMode = Utils.ROPE_SKIP;
                     }
                     break;
                 case MSG_REQUEST_ACCESSORY_MODE:
@@ -359,7 +361,6 @@ public class TrainingActivity extends Activity {
                     mAccessorySensorCharacteristic = accessoryGattService.getCharacteristic(Utils.ACCESSORY_SENSOR_UUID);
                     if(null != mAccessorySensorCharacteristic) {
                         readCharacteristic(address, mAccessorySensorCharacteristic,600,800);
-                        mBleService.setCharacteristicNotification(address,mAccessorySensorCharacteristic,true);
                         Log.d(TAG, "find accessory  sensor characteristic");
                     }
 

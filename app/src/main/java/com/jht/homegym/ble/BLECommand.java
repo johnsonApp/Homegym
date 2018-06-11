@@ -38,6 +38,7 @@ public class BLECommand {
     public static final int SET_PARAMETER_ACCESSORY_MODE = 0x06;
 
     public static final int PACKET_LENGTH_MIN = 4;
+    public static final int PACKET_START_LEN = PACKET_LENGTH_MIN - 1;
     public static final int GET_PARAMETER_LENGTH = 1;
     public static final int REPLY_PARAMETER_VERSION_LENGTH = 3;
     public static final int REPLY_PARAMETER_BATTERY_LENGTH = 2;
@@ -209,11 +210,11 @@ public class BLECommand {
         return data[2];
     }
     public static byte[] unpacketParameter(byte[] data){
-        int length = data.length;
         int dataLength = data[1];
+        int length = dataLength + PACKET_START_LEN;
         byte[] value = new byte[dataLength];
-        for(int i = 3; i < dataLength + 3; i++){
-            value[i - 3] = data[i];
+        for(int i = PACKET_START_LEN; i < length; i++){
+            value[i - PACKET_START_LEN] = data[i];
         }
         return value;
     }

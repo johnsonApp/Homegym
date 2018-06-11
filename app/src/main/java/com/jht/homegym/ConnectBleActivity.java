@@ -169,7 +169,7 @@ public class ConnectBleActivity extends BleActivity implements View.OnClickListe
                 if (mIsConnected) {
                     mConnectIcon.setImageDrawable(getResources().getDrawable(R.drawable.connect_ble_success));
                     mConnectLabel.setText(getResources().getString(R.string.connect_ble_tips1));
-                    mTipsLayout.setVisibility(View.VISIBLE);
+                    mTipsLayout.setVisibility(View.INVISIBLE);
                     mConnect.setText(getResources().getString(R.string.start_training));
                 } else {
                     mConnectIcon.setImageDrawable(getResources().getDrawable(R.drawable.connect_ble_failed));

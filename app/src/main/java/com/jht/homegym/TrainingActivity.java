@@ -21,7 +21,9 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -60,7 +62,7 @@ public class TrainingActivity extends Activity {
     private static final int MSG_DUMBBELL = 4;
     private static final int MSG_ROPE_SKIP = 5;
     private static final int TIME_CHANGE = 6;
-    private static final int REQUEST = 7;
+    private static final int REST_TIME_CHANGE = 7;
     public static final int RESULT_CONTINUE = 8;
     public static final int RESULT_FINISH = 9;
     private static final int MSG_REQUEST_ACCESSORY_MODE = 10;
@@ -78,10 +80,18 @@ public class TrainingActivity extends Activity {
     private SeekBar mResistanceBar;
     private TextView mTotalTrainingValue;
 
+    private TextView mTrainingRestTime;
+    private Button mHoldTraining;
+    private Button mFinishTraining;
+
+    private RelativeLayout mLayoutTraining;
+    private LinearLayout mLayoutTrainPause;
+
     private String mHomegymAddress = null;
     private String mAccessoryAddress = null;
 
     private long mStartTime = 0L;
+    private long mRestTime = 0L;
     private long mTotalTime = 0L;
     private Timer mTimer;
     private TimerTask mTimerTask;
@@ -163,6 +173,9 @@ public class TrainingActivity extends Activity {
                 case TIME_CHANGE:
                     mTrainingTime.setText(String.valueOf(msg.obj));
                     break;
+                case REST_TIME_CHANGE:
+                    mTrainingRestTime.setText(String.valueOf(msg.obj));
+                    break;
                 case MSG_REQUEST_PROGRAM:
                     boolean enable = (boolean) msg.obj;
                     Log.d(TAG,"MSG_REQUEST_PROGRAM enable " + enable);
@@ -195,6 +208,15 @@ public class TrainingActivity extends Activity {
         mRopeSkippingValue.addTextChangedListener(textWatcher);
         mResistanceBar.setOnSeekBarChangeListener(resistanceListener);
 
+        mTrainingRestTime = (TextView) findViewById(R.id.rest_time);
+        mHoldTraining = (Button) findViewById(R.id.hold_train);
+        mFinishTraining = (Button) findViewById(R.id.finish_train);
+        mHoldTraining.setOnClickListener(listener);
+        mFinishTraining.setOnClickListener(listener);
+
+        mLayoutTraining = (RelativeLayout) findViewById(R.id.layout_training);
+        mLayoutTrainPause = (LinearLayout) findViewById(R.id.layout_training_pause);
+
         mSelectIndex = getIntent().getIntExtra(SELECT_MODE, Utils.HOMEGYM);
         Log.e(TAG,"selectIndex = " + mSelectIndex);
 
@@ -226,6 +248,12 @@ public class TrainingActivity extends Activity {
                     break;
                 case R.id.rope_skipping_part:
                     mHandler.sendEmptyMessage(MSG_ROPE_SKIP);
+                    break;
+                case R.id.hold_train:
+                    switchToTraining();
+                    break;
+                case R.id.finish_train:
+                    finishTraining();
                     break;
             }
         }
@@ -565,17 +593,69 @@ public class TrainingActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP){
-            Intent intent = new Intent();
-            intent.setClass(TrainingActivity.this, TrainingPauseActivity.class);
-            startActivityForResult(intent, REQUEST);
-            mTimer.cancel();
-            mTimer.purge();
-            mTotalTime = SystemClock.elapsedRealtime() - mStartTime + mTotalTime;
+        if (mLayoutTraining.getVisibility() == View.VISIBLE){
+            if (event.getAction() == MotionEvent.ACTION_UP){
+                //Intent intent = new Intent();
+                //intent.setClass(TrainingActivity.this, TrainingPauseActivity.class);
+                //startActivityForResult(intent, REQUEST);
+                switchToPause();
+            }
         }
         return true;
     }
 
+    private void switchToPause(){
+        mTimer.cancel();
+        mTimer.purge();
+        mLayoutTraining.setVisibility(View.GONE);
+        mLayoutTrainPause.setVisibility(View.VISIBLE);
+        mRestTime = SystemClock.elapsedRealtime();
+        mHandler.sendMessage(mHandler.obtainMessage(REST_TIME_CHANGE, "00:00:00"));
+        mTimer = new Timer();
+        mTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                mHandler.sendMessage(mHandler.obtainMessage(REST_TIME_CHANGE, timeReversal(SystemClock.elapsedRealtime()- mRestTime)));
+            }
+        };
+        mTimer.schedule(mTimerTask, 1000, 1000);
+        mTotalTime = mRestTime - mStartTime + mTotalTime;
+    }
+
+    private void switchToTraining(){
+        mTimer.cancel();
+        mTimer.purge();
+        mLayoutTrainPause.setVisibility(View.GONE);
+        mLayoutTraining.setVisibility(View.VISIBLE);
+        mStartTime = SystemClock.elapsedRealtime();
+        mTimer = new Timer();
+        mTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                mHandler.sendMessage(mHandler.obtainMessage(TIME_CHANGE, timeReversal(SystemClock.elapsedRealtime()- mStartTime + mTotalTime)));
+            }
+        };
+        mTimer.schedule(mTimerTask, 1000, 1000);
+    }
+
+    private void finishTraining(){
+        FreeTraining freeTraining = new FreeTraining();
+        freeTraining.setUserId(1);
+        freeTraining.setCurTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis())));
+        freeTraining.setTotalTime((int)(mTotalTime / 1000));
+        freeTraining.setDumbbellNum(mDumbbellExerciseCounter);
+        freeTraining.setSkipRopeNum(mRopeSkipExerciseCounter);
+        freeTraining.setPullRopeNum(mHomegymExerciseCounter);
+        freeTraining.setTotalNum(mTotalExerciseCounter);
+        freeTraining.setLevel(mResistanceBar.getProgress());
+        long id = mFreeTrainingBox.put(freeTraining);
+        Intent intent = new Intent(TrainingActivity.this, SummaryActivity.class);
+        intent.putExtra("TRAINING_ID", id);
+        startActivity(intent);
+        finish();
+    }
+
+    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode){
@@ -609,6 +689,7 @@ public class TrainingActivity extends Activity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+    */
 
     private String timeReversal(long time){
         time = time / 1000;

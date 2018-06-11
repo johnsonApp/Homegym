@@ -174,13 +174,13 @@ public class ConnectBleActivity extends BleActivity implements View.OnClickListe
                 } else {
                     mConnectIcon.setImageDrawable(getResources().getDrawable(R.drawable.connect_ble_failed));
                     mConnectLabel.setText(getResources().getString(R.string.connect_ble_tips));
-                    mTipsLayout.setVisibility(View.VISIBLE);
+                    mTipsLayout.setVisibility(View.INVISIBLE);
                 }
                 break;
             case Constants.STATE_DISCONNECTED:
                 mConnectIcon.setImageDrawable(getResources().getDrawable(R.drawable.connect_ble_failed));
                 mConnectLabel.setText(getResources().getString(R.string.connect_ble_tips));
-                mTipsLayout.setVisibility(View.VISIBLE);
+                mTipsLayout.setVisibility(View.INVISIBLE);
                 break;
             case Constants.STATE_SCAN_FINISH:
                 mConnect.setEnabled(true);

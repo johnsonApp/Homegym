@@ -127,7 +127,7 @@ public class HomePageActivity extends BleActivity implements View.OnClickListene
     public void updateUI(int status){
         switch (status){
             case Constants.STATE_CONNECTED:
-            case  Constants.STATE_DISCONNECTED:
+            case Constants.STATE_DISCONNECTED:
                 mMyHandler.sendEmptyMessage(MESSAGE_UPDATE_BLE_STATUS);
                 break;
             case Constants.STATE_SCAN_FINISH:

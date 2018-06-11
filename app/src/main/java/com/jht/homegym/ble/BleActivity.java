@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -54,6 +55,8 @@ public class BleActivity extends AppCompatActivity {
     private boolean mIsThingyScan = false;
     protected boolean mIsConnected = false;
     protected int mRetryTime = 0;
+    protected boolean mIsCancel = false;
+    private String mConnectAddress;
 
 
     protected BroadcastReceiver mBleReceiver = new BroadcastReceiver() {
@@ -75,6 +78,8 @@ public class BleActivity extends AppCompatActivity {
                     mIsConnected = true;
                     connectChanged();
                 }
+
+
                 dismissDialog();
                 updateUI(Constants.STATE_CONNECTED);
             } else if (intent.getAction().equals(Constants.ACTION_GATT_DISCONNECTED)) {
@@ -87,9 +92,12 @@ public class BleActivity extends AppCompatActivity {
                 updateUI(Constants.STATE_DISCONNECTED);
             } else if (intent.getAction().equals(Constants.ACTION_SCAN_FINISHED)) {
                 //btn_scanBle.setEnabled(true);
-                Log.i(TAG,"ACTION_SCAN_FINISHED");
+                Log.i(TAG,"ACTION_SCAN_FINISHED mIsCancel " + mIsCancel);
+                if(mIsCancel){
+                    return;
+                }
                 isScanDevice();
-                Log.d(TAG," mIsThingyScan " + mIsThingyScan + " mIsHomegymScan " + mIsHomegymScan);
+                Log.d(TAG," mIsThingyScan " + mIsThingyScan + " mIsHomegymScan " + mIsHomegymScan + " " + mRetryTime);
                 if((mIsHomegymScan && mIsThingyScan) || mRetryTime >= RETRY_TIME || mDeviceList.size() == 2) {
                     updateUI(Constants.STATE_SCAN_FINISH);
                     dismissDialog();
@@ -113,12 +121,14 @@ public class BleActivity extends AppCompatActivity {
                     if(Utils.handleVersionPermission(BleActivity.this)){
                         List<BluetoothDevice> list = mBleService.getConnectDevices();
                         if (list == null || list.size() == 0){
-                            //Log.d(TAG,"onServiceConnected address " + list.get(0).getAddress());
                             if (mDeviceList == null || mDeviceList.size() == 0) {
                                 setScan(true);
                             } else {
                                 connectDevice();
                             }
+                        }else {
+                            mIsConnected = true;
+                            connectChanged();
                         }
                     }
                     Log.d(TAG, "Bluetooth was opened");
@@ -209,12 +219,13 @@ public class BleActivity extends AppCompatActivity {
             mBleService.scanLeDevice(scan, AccessoryUUID);
         }
 
-        if(!mBleService.isScanning()){
+        if(!mBleService.isScanning() && mRetryTime < RETRY_TIME){
             dismissDialog();
             connectDevice();
         }
         //mConnect.setEnabled(!scan);
     }
+
 
     public void stopScan(){
         if (null != mBleService && mBleService.isScanning()) {
@@ -227,6 +238,7 @@ public class BleActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (null != mBleService && mBleService.isScanning()) {
             mBleService.scanLeDevice(false);
+            mRetryTime = RETRY_TIME;
             return;
         }
         super.onBackPressed();
@@ -271,6 +283,18 @@ public class BleActivity extends AppCompatActivity {
         mProgressDialog.setProgressStyle(mProgressDialog.STYLE_SPINNER);
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.setMessage(message);
+        mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Log.d(TAG,"Dialog  on BackPress");
+                if (null != mBleService && mBleService.isScanning()) {
+                    mBleService.scanLeDevice(false);
+                    mIsCancel = true;
+                    return;
+                }
+            }
+        });
         mProgressDialog.show();
     }
 
@@ -299,6 +323,7 @@ public class BleActivity extends AppCompatActivity {
 
 
     public void setConnect(){
+        mIsCancel = false;
         int size = mDeviceList.size();
         if(0 == size){
             setScan(true);
@@ -327,19 +352,22 @@ public class BleActivity extends AppCompatActivity {
 
     private void connectDevice() {
         if (mDeviceList != null){
-            showDialog(getResources().getString(R.string.connecting));
             int size = mDeviceList.size();
             if(0 == size){
-                dismissDialog();
                 Log.i(TAG,"connectDevice make Toast");
                 Toast.makeText(this,"Can not find any device ,please retry",Toast.LENGTH_LONG);
                 return;
             }
             for (int i = 0; i < size; i++) {
                 HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
-                Log.i(TAG,"connectDevice " + devMap.get(ADDRESS).toString());
+                String address = devMap.get(ADDRESS).toString();
+                Log.i(TAG,"connectDevice " + address);
                 if(!(boolean)devMap.get(IS_CONNECTED)) {
-                    mBleService.connect(devMap.get(ADDRESS).toString());
+                    showDialog(getResources().getString(R.string.connecting));
+                    boolean result =  mBleService.connect(address);
+                    if(!result){
+                        dismissDialog();
+                    }
                 }
             }
             Log.i(TAG,"connectDevice " + size);

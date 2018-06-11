@@ -186,7 +186,6 @@ public class MultipleBleService extends Service implements Constants, BleListene
                     /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         mBluetoothAdapter.getBluetoothLeScanner().stopScan(mScanCallback);
                     } else {*/
-                    Log.d(TAG,"scanLeDevice  need stop Scan");
                         mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     //}
                     broadcastUpdate(ACTION_SCAN_FINISHED);
@@ -360,7 +359,8 @@ public class MultipleBleService extends Service implements Constants, BleListene
             Log.w(TAG, "BluetoothAdapter not initialized.");
             return;
         }
-        mBluetoothGattMap.get(address).readCharacteristic(characteristic);
+        boolean result = mBluetoothGattMap.get(address).readCharacteristic(characteristic);
+        Log.d(TAG,"readCharacteristic " + " result " +  result);
     }
 
     /**

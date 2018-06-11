@@ -37,6 +37,7 @@ import com.jht.homegym.algorithm.AccessoryExercise;
 import com.jht.homegym.dao.FreeTraining;
 import com.jht.homegym.data.AccessoryData;
 import com.jht.homegym.data.ConsoleProgramData;
+import com.jht.homegym.utils.CrcUtils;
 import com.jht.homegym.utils.Utils;
 
 import java.text.DecimalFormat;
@@ -63,10 +64,10 @@ public class TrainingActivity extends Activity {
     private static final int MSG_ROPE_SKIP = 5;
     private static final int TIME_CHANGE = 6;
     private static final int REST_TIME_CHANGE = 7;
-    public static final int RESULT_CONTINUE = 8;
-    public static final int RESULT_FINISH = 9;
-    private static final int MSG_REQUEST_ACCESSORY_MODE = 10;
-    private static final int MSG_REQUEST_PROGRAM = 11;
+    private static final int MSG_REQUEST_ACCESSORY_MODE = 8;
+    private static final int MSG_SWITCH_PAUSE = 9;
+    private static final int MSG_SWITCH_TRAINING = 10;
+    private static final int MSG_SWITCH_STOP = 11;
 
     private TextView mCountDown;
     private RelativeLayout mDumbbellPart;
@@ -93,7 +94,7 @@ public class TrainingActivity extends Activity {
     private long mStartTime = 0L;
     private long mRestTime = 0L;
     private long mTotalTime = 0L;
-    private Timer mTimer;
+    private Timer mTimer = new Timer();
     private TimerTask mTimerTask;
 
     private Box<FreeTraining> mFreeTrainingBox;
@@ -120,6 +121,8 @@ public class TrainingActivity extends Activity {
 
     private int mSelectIndex = 0;
     private int mAccessoryMode = BLECommand.INVAILD_DATA;
+
+    private int mCurrentStatus = BLECommand.PROGRAM_STATUS_STOP;
 
     private Handler mHandler = new Handler() {
         boolean result = false;
@@ -176,10 +179,14 @@ public class TrainingActivity extends Activity {
                 case REST_TIME_CHANGE:
                     mTrainingRestTime.setText(String.valueOf(msg.obj));
                     break;
-                case MSG_REQUEST_PROGRAM:
-                    boolean enable = (boolean) msg.obj;
-                    Log.d(TAG,"MSG_REQUEST_PROGRAM enable " + enable);
-                    result = setProgramNoticeEnable(enable);
+                case MSG_SWITCH_PAUSE:
+                    switchToPause();
+                    break;
+                case MSG_SWITCH_TRAINING:
+                    switchToTraining();
+                    break;
+                case MSG_SWITCH_STOP:
+                    finishTraining();
                     break;
             }
         }
@@ -221,14 +228,14 @@ public class TrainingActivity extends Activity {
         Log.e(TAG,"selectIndex = " + mSelectIndex);
 
         mStartTime = SystemClock.elapsedRealtime();
-        mTimer = new Timer();
+        /*mTimer = new Timer();
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
                 mHandler.sendMessage(mHandler.obtainMessage(TIME_CHANGE, timeReversal(SystemClock.elapsedRealtime()- mStartTime + mTotalTime)));
             }
         };
-        mTimer.schedule(mTimerTask, 1000, 1000);
+        mTimer.schedule(mTimerTask, 1000, 1000);*/
 
         //ObjectBox manage the database
         mFreeTrainingBox = ((HomegymApplication) getApplication()).getBoxStore().boxFor(FreeTraining.class);
@@ -262,7 +269,6 @@ public class TrainingActivity extends Activity {
     SeekBar.OnSeekBarChangeListener resistanceListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            setHomegyResistance(progress);
             mResistanceValue.setText(String.valueOf(progress));
         }
 
@@ -273,7 +279,7 @@ public class TrainingActivity extends Activity {
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-
+            setHomegyResistance(seekBar.getProgress());
         }
     };
 
@@ -411,12 +417,8 @@ public class TrainingActivity extends Activity {
                         boolean result = mBleService.writeCharacteristic(address, Utils.HOMEGYM_BASE_UUID,
                         Utils.HOMEGYM_WRITE_UUID, data);*/
 
-                        Message msg = new Message();
-                        msg.what = MSG_REQUEST_ACCESSORY_MODE;
-                        msg.obj = true;
-                        mHandler.sendMessageDelayed(msg,200);
-                        //setProgramNoticeEnable(true);
-                        Log.d(TAG,"writeCharacteristic");
+                        boolean result = setProgramNoticeEnable(true);
+                        Log.d(TAG,"writeCharacteristic result " + result);
                     }
                 }
             }
@@ -431,6 +433,13 @@ public class TrainingActivity extends Activity {
             public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
                 //Log.d(TAG,"some thing changed");
                 //logData(characteristic.getValue());
+                /*byte[] dataTemp = {02,0x0b,0x11,0x08,0x00,(byte)0x46,0x36,0x00,0x00,0x00,0x04,0x02,0x00,0x00};
+                byte[] data = new byte[dataTemp.length + 1];
+                int crc = CrcUtils.calcCrc8(dataTemp);
+                for(int i = 0; i < dataTemp.length; i++) {
+                    data[i] = dataTemp[i];
+                }
+                data[dataTemp.length] = (byte) (crc & 0xff);*/
                 byte[] data = characteristic.getValue();
                int mode = BLECommand.getPacketMode(data);
                 if(BLECommand.COMMAND_REPLY_PARAMETER == mode){
@@ -449,6 +458,7 @@ public class TrainingActivity extends Activity {
                 }
                 if(characteristic.equals(mAccessorySensorCharacteristic)) {
                     Log.d(TAG,"get mAccessorySensorCharacteristic mode " + mode);
+
                     logData(data);
                     if(BLECommand.COMMAND_ACCESSORY_SENSOR == mode){
                         Log.d(TAG,"getAccessoryValue ");
@@ -542,8 +552,8 @@ public class TrainingActivity extends Activity {
                         Utils.ACCESSORY_WRITE_UUID, data);
             }*/
             if(null != mHomegymAddress) {
-                result = mBleService.writeCharacteristic(mHomegymAddress, Utils.ACCESSORY_BASE_UUID,
-                        Utils.ACCESSORY_WRITE_UUID, data);
+                result = mBleService.writeCharacteristic(mHomegymAddress, Utils.HOMEGYM_BASE_UUID,
+                        Utils.HOMEGYM_WRITE_UUID, data);
             }
         }
         return result;
@@ -628,17 +638,19 @@ public class TrainingActivity extends Activity {
         mLayoutTrainPause.setVisibility(View.GONE);
         mLayoutTraining.setVisibility(View.VISIBLE);
         mStartTime = SystemClock.elapsedRealtime();
-        mTimer = new Timer();
+        /*mTimer = new Timer();
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
                 mHandler.sendMessage(mHandler.obtainMessage(TIME_CHANGE, timeReversal(SystemClock.elapsedRealtime()- mStartTime + mTotalTime)));
             }
         };
-        mTimer.schedule(mTimerTask, 1000, 1000);
+        mTimer.schedule(mTimerTask, 1000, 1000);*/
     }
 
     private void finishTraining(){
+        mTimer.cancel();
+        mTimer.purge();
         FreeTraining freeTraining = new FreeTraining();
         freeTraining.setUserId(1);
         freeTraining.setCurTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis())));
@@ -655,47 +667,18 @@ public class TrainingActivity extends Activity {
         finish();
     }
 
-    /*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (resultCode){
-            case RESULT_CONTINUE:
-                mStartTime = SystemClock.elapsedRealtime();
-                mTimer = new Timer();
-                mTimerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        mHandler.sendMessage(mHandler.obtainMessage(TIME_CHANGE, timeReversal(SystemClock.elapsedRealtime()- mStartTime + mTotalTime)));
-                    }
-                };
-                mTimer.schedule(mTimerTask, 1000, 1000);
-                break;
-            case RESULT_FINISH:
-                FreeTraining freeTraining = new FreeTraining();
-                freeTraining.setUserId(1);
-                freeTraining.setCurTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis())));
-                freeTraining.setTotalTime((int)(mTotalTime / 1000));
-                freeTraining.setDumbbellNum(mDumbbellExerciseCounter);
-                freeTraining.setSkipRopeNum(mRopeSkipExerciseCounter);
-                freeTraining.setPullRopeNum(mHomegymExerciseCounter);
-                freeTraining.setTotalNum(mTotalExerciseCounter);
-                freeTraining.setLevel(mResistanceBar.getProgress());
-                long id = mFreeTrainingBox.put(freeTraining);
-                Intent intent = new Intent(TrainingActivity.this, SummaryActivity.class);
-                intent.putExtra("TRAINING_ID", id);
-                startActivity(intent);
-                finish();
-                break;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-    */
-
     private String timeReversal(long time){
         time = time / 1000;
         String hh = new DecimalFormat("00").format(time / 3600);
         String mm = new DecimalFormat("00").format(time % 3600 / 60);
         String ss = new DecimalFormat("00").format(time % 60);
+        return hh + ":" + mm + ":" + ss;
+    }
+
+    private String timeReversal(int min, int sec){
+        String hh = new DecimalFormat("00").format(min / 60);
+        String mm = new DecimalFormat("00").format(min % 60);
+        String ss = new DecimalFormat("00").format(sec);
         return hh + ":" + mm + ":" + ss;
     }
 
@@ -739,6 +722,22 @@ public class TrainingActivity extends Activity {
                         mHomegymExerciseCounter = programData.getTimes();
                         Log.d(TAG,"updateReplyMessage Times = " +  mHomegymExerciseCounter);
                         mHandler.sendEmptyMessage(UPDATE_HOMEGYM_COUNT);
+                        int status = programData.getProgramStatus();
+                        if(mCurrentStatus != status){
+                            switch(status) {
+                                case BLECommand.PROGRAM_STATUS_STOP:
+                                    mHandler.sendEmptyMessage(MSG_SWITCH_STOP);
+                                    break;
+                                case BLECommand.PROGRAM_STATUS_PAUSE:
+                                    mHandler.sendEmptyMessage(MSG_SWITCH_PAUSE);
+                                    break;
+                                case BLECommand.PROGRAM_STATUS_START:
+                                    mHandler.sendEmptyMessage(MSG_SWITCH_TRAINING);
+                                    break;
+                            }
+                            mCurrentStatus = status;
+                        }
+                        mHandler.sendMessage(mHandler.obtainMessage(TIME_CHANGE, timeReversal(programData.getTimeMinute(),programData.getTimeSecond())));
                     }
                 }else if(BLECommand.PROGRAM_MODE_ACCESSORY == programMode) {
                     AccessoryData accessoryData = new AccessoryData(data);

@@ -37,10 +37,10 @@
     <string name="add_plan">添加计划</string>
     <string name="minutes">分钟</string>
 
-    <string name="connect_ble_warning">您沒有连接Homegym设备</string>
-    <string name="connect_ble_tips">您已经连接到Homegym设备</string>
-    <string name="connect_ble_warning1">现在连接您的设备开始专业的健身</string>
-    <string name="connect_ble_tips1">请开始锻炼</string>
+    <string name="connect_ble_warning">您没有绑定Homegym设备</string>
+    <string name="connect_ble_tips">连接失败，请重新尝试连接</string>
+    <string name="connect_ble_warning1">现在绑定您的设备开始专业的健身</string>
+    <string name="connect_ble_tips1">成功连接Homegym</string>
     <string name="connect_ble_connect">连接</string>
 
     <string name="scanning">扫描中...</string>

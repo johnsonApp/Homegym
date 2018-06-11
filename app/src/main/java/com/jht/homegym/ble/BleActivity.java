@@ -56,7 +56,6 @@ public class BleActivity extends AppCompatActivity {
     protected boolean mIsConnected = false;
     protected int mRetryTime = 0;
     protected boolean mIsCancel = false;
-    private String mConnectAddress;
 
 
     protected BroadcastReceiver mBleReceiver = new BroadcastReceiver() {

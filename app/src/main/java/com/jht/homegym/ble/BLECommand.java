@@ -56,8 +56,8 @@ public class BLECommand {
 
 
     public static final int PROGRAM_STATUS_STOP = 0;
-    public static final int PROGRAM_STATUS_PAUSE = 0;
-    public static final int PROGRAM_STATUS_START = 0;
+    public static final int PROGRAM_STATUS_PAUSE = 1;
+    public static final int PROGRAM_STATUS_START = 2;
 
     public static final int PROGRAM_NOTICE_DISABLE = 0;
     public static final int PROGRAM_NOTICE_ENABLE = 1;
@@ -86,7 +86,7 @@ public class BLECommand {
         byte[] data = new byte[GET_PARAMETER_LENGTH];
         int value = enable ? PROGRAM_NOTICE_ENABLE : PROGRAM_NOTICE_DISABLE;
         data[0] = (byte)(value & 0xFF);
-        return packetParameter(COMMAND_GET_PARAMETER, data);
+        return packetParameter(COMMAND_PROGRAM_NOTICE, data);
     }
 
     public static byte[] setParameter(int which, int value){

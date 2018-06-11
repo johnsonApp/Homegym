@@ -55,8 +55,9 @@ public class ConnectBleActivity extends BleActivity implements View.OnClickListe
 */
     private ImageView mClosePage;
     private Button mConnect;
+    private ImageView mConnectIcon;
     private TextView mConnectLabel;
-    private TextView mConnectLabel2;
+    private LinearLayout mTipsLayout;
 
     //Constant
 /*    public static final int SERVICE_BIND = 1;
@@ -166,12 +167,20 @@ public class ConnectBleActivity extends BleActivity implements View.OnClickListe
         switch (status){
             case Constants.STATE_CONNECTED:
                 if (mIsConnected) {
-                    mConnectLabel.setText(getResources().getString(R.string.connect_ble_tips));
-                    mConnectLabel2.setText(getResources().getString(R.string.connect_ble_tips1));
+                    mConnectIcon.setImageDrawable(getResources().getDrawable(R.drawable.connect_ble_success));
+                    mConnectLabel.setText(getResources().getString(R.string.connect_ble_tips1));
+                    mTipsLayout.setVisibility(View.VISIBLE);
                     mConnect.setText(getResources().getString(R.string.start_training));
+                } else {
+                    mConnectIcon.setImageDrawable(getResources().getDrawable(R.drawable.connect_ble_failed));
+                    mConnectLabel.setText(getResources().getString(R.string.connect_ble_tips));
+                    mTipsLayout.setVisibility(View.VISIBLE);
                 }
                 break;
             case Constants.STATE_DISCONNECTED:
+                mConnectIcon.setImageDrawable(getResources().getDrawable(R.drawable.connect_ble_failed));
+                mConnectLabel.setText(getResources().getString(R.string.connect_ble_tips));
+                mTipsLayout.setVisibility(View.VISIBLE);
                 break;
             case Constants.STATE_SCAN_FINISH:
                 mConnect.setEnabled(true);
@@ -199,8 +208,9 @@ public class ConnectBleActivity extends BleActivity implements View.OnClickListe
         mClosePage.setOnClickListener(this);
         mConnect = findViewById(R.id.button_connect_ble);
         mConnect.setOnClickListener(this);
+        mConnectIcon = findViewById(R.id.connect_status_icon);
         mConnectLabel = findViewById(R.id.connect_label);
-        mConnectLabel2 = findViewById(R.id.connect_label2);
+        mTipsLayout = (LinearLayout) findViewById(R.id.tips_layout);
 
         /*mDeviceList = new ArrayList<Map<String, Object>>();
         registerReceiver(mBleReceiver, makeIntentFilter());

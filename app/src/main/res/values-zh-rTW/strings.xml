@@ -38,7 +38,9 @@
     <string name="minutes">分鐘</string>
 
     <string name="connect_ble_warning">您沒有連接Homegym設備</string>
+    <string name="connect_ble_tips">您已經連接到Homegym設備</string>
     <string name="connect_ble_warning1">現在連接您的設備開始專業的健身</string>
+    <string name="connect_ble_tips1">請開始鍛煉</string>
     <string name="connect_ble_connect">連接</string>
 
     <string name="scanning">掃描中...</string>

@@ -355,7 +355,7 @@ public class BleActivity extends AppCompatActivity {
             int size = mDeviceList.size();
             if(0 == size){
                 Log.i(TAG,"connectDevice make Toast");
-                Toast.makeText(this,"Can not find any device ,please retry",Toast.LENGTH_LONG);
+                //Toast.makeText(this,"Can not find any device ,please retry",Toast.LENGTH_LONG).show();
                 return;
             }
             for (int i = 0; i < size; i++) {

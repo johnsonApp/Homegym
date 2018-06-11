@@ -48,7 +48,9 @@
     <string name="minutes">minutes</string>
 
     <string name="connect_ble_warning">Your APP still not connect to the Homegym</string>
+    <string name="connect_ble_tips">Your APP have connected to the Homegym</string>
     <string name="connect_ble_warning1">Connect your homegym to start the sport</string>
+    <string name="connect_ble_tips1">Please start the sport</string>
     <string name="connect_ble_connect">CONNECT</string>
 
 

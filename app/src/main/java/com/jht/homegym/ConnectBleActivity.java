@@ -21,13 +21,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jht.homegym.ble.BleActivity;
 import com.jht.homegym.ble.MultipleBleService;
@@ -57,8 +55,8 @@ public class ConnectBleActivity extends BleActivity implements View.OnClickListe
 */
     private ImageView mClosePage;
     private Button mConnect;
-    private TextView mConnectLable;
-    private LinearLayout mConnectLable2;
+    private TextView mConnectLabel;
+    private TextView mConnectLabel2;
 
     //Constant
 /*    public static final int SERVICE_BIND = 1;
@@ -167,11 +165,13 @@ public class ConnectBleActivity extends BleActivity implements View.OnClickListe
     public void updateUI(int status){
         switch (status){
             case Constants.STATE_CONNECTED:
-            case  Constants.STATE_DISCONNECTED:
-                mConnectLable2.setVisibility(View.INVISIBLE);
                 if (mIsConnected) {
-                    mConnect.setText("開始 FREE MODE");
+                    mConnectLabel.setText(getResources().getString(R.string.connect_ble_tips));
+                    mConnectLabel2.setText(getResources().getString(R.string.connect_ble_tips1));
+                    mConnect.setText(getResources().getString(R.string.start_training));
                 }
+                break;
+            case Constants.STATE_DISCONNECTED:
                 break;
             case Constants.STATE_SCAN_FINISH:
                 mConnect.setEnabled(true);
@@ -199,9 +199,8 @@ public class ConnectBleActivity extends BleActivity implements View.OnClickListe
         mClosePage.setOnClickListener(this);
         mConnect = findViewById(R.id.button_connect_ble);
         mConnect.setOnClickListener(this);
-        mConnectLable = findViewById(R.id.connect_lable);
-
-        mConnectLable2 = findViewById(R.id.connect_lable2);
+        mConnectLabel = findViewById(R.id.connect_label);
+        mConnectLabel2 = findViewById(R.id.connect_label2);
 
         /*mDeviceList = new ArrayList<Map<String, Object>>();
         registerReceiver(mBleReceiver, makeIntentFilter());

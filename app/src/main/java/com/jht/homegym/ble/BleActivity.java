@@ -77,8 +77,6 @@ public class BleActivity extends AppCompatActivity {
                     mIsConnected = true;
                     connectChanged();
                 }
-
-
                 dismissDialog();
                 updateUI(Constants.STATE_CONNECTED);
             } else if (intent.getAction().equals(Constants.ACTION_GATT_DISCONNECTED)) {
@@ -364,6 +362,7 @@ public class BleActivity extends AppCompatActivity {
                 if(!(boolean)devMap.get(IS_CONNECTED)) {
                     showDialog(getResources().getString(R.string.connecting));
                     boolean result =  mBleService.connect(address);
+                    Log.d(TAG,"connectDevice result " + result);
                     if(!result){
                         dismissDialog();
                     }

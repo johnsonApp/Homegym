@@ -5,7 +5,7 @@ public class AccessoryExercise {
     // Sensor raw data
     private static final float const_gravity = 9.81f;
     private float SENSOR_FILER_ALPHA = 0.2f, acceX = 0.0f, acceY = 0.0f, acceZ = 0.0f;
-    private float[] acce_gravity = new float[3], acce_linear = new float[3];
+    private float[] acce_gravity = new float[3];
     private float acce_gravity_get = 0.0f, acce_gravity_sub = 0.0f, acce_gravity_sub_temp = 0.0f, acce_gravity_filter_x = 0.0f;
     private static final short filter_length = 5, filter_length_1 = filter_length-1;
     private float[] acceX_filter_buffer = new float[filter_length];
@@ -13,6 +13,7 @@ public class AccessoryExercise {
     private byte acceX_index = 0, index_check_pre = 0, index_check_sub = 0;
     private float[] acceX_gravity_buffer = new float[acce_maxDataPoints];
     private float acce_avg_new = 0.0f, acce_std = 0.0f, acce_avg = 0.0f;
+    private byte acce_choose = 0;
 
     // Dumbbell counting
     private boolean isUp = false, isGravityX = false;
@@ -23,21 +24,39 @@ public class AccessoryExercise {
     private byte active_threshold = 15, timestamp_threshold = 5;
 
     public int exerciseCounting(final float x, final float y, final float z) {
-        // Normalize to 0.0f~9.81f
-        acceX = x/0.032f * const_gravity;
-        //acceY = y/0.032f * const_gravity;
-        acceZ = z/0.032f * const_gravity;
+        acceX = x;
+        acceY = y;
+        acceZ = z;
         // Low-pass filter to reduce noise
         // to isolate the force of gravity
         acce_gravity[0] = SENSOR_FILER_ALPHA * acceX + (1.0f - SENSOR_FILER_ALPHA) * acce_gravity[0];
-        //acce_gravity[1] = SENSOR_FILER_ALPHA * acceY + (1.0f - SENSOR_FILER_ALPHA) * acce_gravity[1];
+        acce_gravity[1] = SENSOR_FILER_ALPHA * acceY + (1.0f - SENSOR_FILER_ALPHA) * acce_gravity[1];
         acce_gravity[2] = SENSOR_FILER_ALPHA * acceZ + (1.0f - SENSOR_FILER_ALPHA) * acce_gravity[2];
-        acce_linear[0] = acceX - acce_gravity[0];
-        acce_linear[2] = acceZ - acce_gravity[2];
 
-        // Check to get gravity x or gravity z
-        if(active_counter < 10) isGravityX = (Math.abs(acce_gravity[0]) > Math.abs(acce_gravity[2]))? true : false;
-        acce_gravity_get = (isGravityX)? acce_gravity[0]:acce_gravity[2];
+        // Check to get gravity x, y or z
+        if(active_counter < 10){
+            isGravityX = (Math.abs(acce_gravity[0]) > Math.abs(acce_gravity[2]))? true : false;
+            if(Math.abs(acce_gravity[0]) > Math.abs(acce_gravity[2])){
+                if(Math.abs(acce_gravity[0]) > Math.abs(acce_gravity[1])) acce_choose = 0;
+                else acce_choose = 1;
+            }
+            else{
+                if(Math.abs(acce_gravity[2]) > Math.abs(acce_gravity[1])) acce_choose = 2;
+                else acce_choose = 1;
+            }
+        }
+        switch (acce_choose){
+            case 0:
+                acce_gravity_get = acce_gravity[0];
+                break;
+            case 1:
+                acce_gravity_get = acce_gravity[1];
+                break;
+            case 2:
+                acce_gravity_get = acce_gravity[2];
+                break;
+        }
+        //acce_gravity_get = (isGravityX)? acce_gravity[0]:acce_gravity[2];
 
         // Buffer shift and apply average filter
         // Subtraction
@@ -116,7 +135,7 @@ public class AccessoryExercise {
         return this.acce_gravity_get;
     }
     public float getV2(){
-        return this.acce_linear[0];
+        return this.active_counter;
     }
     public float getV3(){
         return this.acce_std;

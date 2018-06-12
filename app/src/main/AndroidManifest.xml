@@ -23,7 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FreeModeTrainingActivity" android:screenOrientation="landscape"/>
         <activity android:name=".FreeModeSelectActivity" android:screenOrientation="landscape"/>
         <activity android:name=".ConnectBleActivity" android:screenOrientation="landscape"/>
         <activity android:name=".CountdownActivity" android:screenOrientation="landscape"/>

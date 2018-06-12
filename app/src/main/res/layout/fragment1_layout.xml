@@ -17,7 +17,7 @@
             android:layout_above="@id/make_plan"
             android:layout_marginBottom="40dp"
             android:textColor="@android:color/white"
-            android:textSize="30sp"
+            android:textSize="@dimen/fragment1_layout_text1"
             android:text="@string/welcome_tips"/>
 
         <Button
@@ -31,7 +31,7 @@
             android:paddingBottom="10dp"
             android:background="@color/colorStartTrainingBtn"
             android:textColor="@color/colorWhite"
-            android:textSize="20sp"
+            android:textSize="@dimen/fragment1_layout_text2"
             android:text="@string/make_plan"/>
 
         <TextView
@@ -43,7 +43,7 @@
             android:layout_marginEnd="50dp"
             android:layout_marginBottom="30dp"
             android:textColor="@color/colorStartTrainingBtn"
-            android:textSize="30sp"
+            android:textSize="@dimen/fragment1_layout_text1"
             android:text="@string/free_training"/>
 
     </RelativeLayout>

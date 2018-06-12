@@ -11,7 +11,7 @@
     <!-- TODO: Update blank fragment layout -->
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="@dimen/fragment_challenge1"
         android:src="@drawable/challenge_1"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="3dp"
@@ -19,7 +19,7 @@
         />
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="@dimen/fragment_challenge1"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="3dp"
         android:src="@drawable/challenge_2"
@@ -28,7 +28,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="@dimen/fragment_challenge1"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="3dp"
         android:src="@drawable/challenge_3"

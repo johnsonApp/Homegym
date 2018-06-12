@@ -19,16 +19,14 @@
 
     <TextView
         android:id="@+id/count_down"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
+        android:layout_width="@dimen/count_down1"
+        android:layout_height="@dimen/count_down1"
+        android:layout_centerInParent="true"
         android:background="@drawable/count_down_bg"
         android:gravity="center"
         android:textColor="@android:color/black"
         android:textStyle="bold"
-        android:textSize="120sp"
+        android:textSize="@dimen/count_down_text1"
         android:text="5"/>
 
     <TextView
@@ -37,9 +35,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/count_down"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="@dimen/count_down2"
         android:textColor="@android:color/black"
-        android:textSize="26sp"
+        android:textSize="@dimen/count_down_text2"
         android:text="@string/count_down_tips" />
 
 </RelativeLayout>

@@ -13,7 +13,7 @@
         <RelativeLayout
             android:id="@+id/head_layout"
             android:layout_width="match_parent"
-            android:layout_height="120dp">
+            android:layout_height="@dimen/fragment_user_center1">
 
             <TextView
                 android:id="@+id/weight"
@@ -24,7 +24,7 @@
                 android:layout_marginEnd="30dp"
                 android:drawableStart="@drawable/goal"
                 android:textColor="@color/colorBlack"
-                android:textSize="24sp"
+                android:textSize="@dimen/fragment_user_center_text1"
                 android:text="60kg"/>
 
             <ImageView
@@ -44,7 +44,7 @@
                 android:layout_marginStart="30dp"
                 android:drawableStart="@drawable/heart_black"
                 android:textColor="@color/colorBlack"
-                android:textSize="24sp"
+                android:textSize="@dimen/fragment_user_center_text1"
                 android:text="BMI:22.5"/>
 
             <Button
@@ -58,7 +58,7 @@
                 android:paddingEnd="20dp"
                 android:background="@color/colorStartTrainingBtn"
                 android:textColor="@color/colorWhite"
-                android:textSize="20sp"
+                android:textSize="@dimen/fragment_user_center_text2"
                 android:text="@string/add_plan"/>
         </RelativeLayout>
 
@@ -73,7 +73,7 @@
         <RelativeLayout
             android:id="@+id/middle_layout"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="@dimen/fragment_user_center2"
             android:layout_below="@id/line"
             android:layout_centerHorizontal="true">
 
@@ -92,8 +92,8 @@
                 android:orientation="vertical"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginTop="@dimen/fragment_user_center3"
+                android:layout_marginBottom="@dimen/fragment_user_center3"
                 android:weightSum="3">
 
                 <LinearLayout
@@ -106,34 +106,34 @@
                     android:layout_marginBottom="5dp">
 
                     <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/fragment_user_center4"
+                        android:layout_height="@dimen/fragment_user_center4"
                         android:src="@drawable/ropeskipping"
                         android:layout_marginEnd="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="5dp"
                         android:gravity="start|center_vertical"
                         android:textColor="@color/colorBlack"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/fragment_user_center_text3"
                         android:text="@string/training_time"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="match_parent"
                         android:gravity="start|center_vertical"
                         android:textColor="@color/colorBlack"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/fragment_user_center_text3"
                         android:text="0"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="match_parent"
                         android:gravity="start|center_vertical"
                         android:textColor="@color/colorBlack"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/fragment_user_center_text3"
                         android:text="@string/minutes"/>
 
                 </LinearLayout>
@@ -148,34 +148,34 @@
                     android:layout_marginBottom="5dp">
 
                     <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/fragment_user_center4"
+                        android:layout_height="@dimen/fragment_user_center4"
                         android:src="@drawable/dumbbel"
                         android:layout_marginEnd="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="5dp"
                         android:gravity="start|center_vertical"
                         android:textColor="@color/colorBlack"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/fragment_user_center_text3"
                         android:text="@string/training_time"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="match_parent"
                         android:gravity="start|center_vertical"
                         android:textColor="@color/colorBlack"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/fragment_user_center_text3"
                         android:text="0"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="match_parent"
                         android:gravity="start|center_vertical"
                         android:textColor="@color/colorBlack"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/fragment_user_center_text3"
                         android:text="@string/minutes"/>
 
                 </LinearLayout>
@@ -190,34 +190,34 @@
                     android:layout_marginBottom="5dp">
 
                     <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/fragment_user_center4"
+                        android:layout_height="@dimen/fragment_user_center4"
                         android:src="@drawable/homegym"
                         android:layout_marginEnd="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="match_parent"
                         android:layout_marginEnd="5dp"
                         android:gravity="start|center_vertical"
                         android:textColor="@color/colorBlack"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/fragment_user_center_text3"
                         android:text="@string/training_time"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="match_parent"
                         android:gravity="start|center_vertical"
                         android:textColor="@color/colorBlack"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/fragment_user_center_text3"
                         android:text="0"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="match_parent"
                         android:gravity="start|center_vertical"
                         android:textColor="@color/colorBlack"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/fragment_user_center_text3"
                         android:text="@string/minutes"/>
 
                 </LinearLayout>
@@ -227,23 +227,25 @@
             <TextView
                 android:id="@+id/train_total_time"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/fragment_user_center5"
                 android:layout_toEndOf="@id/data_layout"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="100dp"
+                android:gravity="bottom"
                 android:textColor="@color/colorBlack"
                 android:textStyle="bold"
-                android:textSize="32sp"
+                android:textSize="@dimen/fragment_user_center_text4"
                 android:text="0"/>
 
             <TextView
                 android:id="@+id/train_time_unit"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/fragment_user_center5"
                 android:layout_toEndOf="@id/train_total_time"
                 android:layout_centerVertical="true"
+                android:gravity="bottom"
                 android:textColor="@color/colorBlack"
-                android:textSize="30sp"
+                android:textSize="@dimen/fragment_user_center_text5"
                 android:text="@string/minutes"/>
 
         </RelativeLayout>
@@ -263,9 +265,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/fragment_user_center6"
                 android:textColor="@color/colorStartTrainingBtn"
-                android:textSize="24sp"
+                android:textSize="@dimen/fragment_user_center_text1"
                 android:text="@string/training_time"/>
             
             <LinearLayout
@@ -273,18 +275,18 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="@dimen/fragment_user_center6"
                 android:orientation="horizontal">
                 
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="@dimen/fragment_user_center7"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center_horizontal">
 
                     <RelativeLayout
                         android:layout_width="3dp"
-                        android:layout_height="120dp"
+                        android:layout_height="@dimen/fragment_user_center8"
                         android:gravity="bottom">
 
                         <TextView
@@ -301,26 +303,26 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/fragment_user_center_text2"
                         android:text="05/12"/>
                     
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="@dimen/fragment_user_center7"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center_horizontal">
 
                     <RelativeLayout
                         android:layout_width="3dp"
-                        android:layout_height="120dp"
+                        android:layout_height="@dimen/fragment_user_center8"
                         android:gravity="bottom">
 
                         <TextView
                             android:id="@+id/train_time2"
                             android:layout_width="match_parent"
-                            android:layout_height="30dp"
+                            android:layout_height="60dp"
                             android:background="@color/colorStartTrainingBtn" />
 
                     </RelativeLayout>
@@ -331,26 +333,26 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/fragment_user_center_text2"
                         android:text="05/13"/>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="@dimen/fragment_user_center7"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center_horizontal">
 
                     <RelativeLayout
                         android:layout_width="3dp"
-                        android:layout_height="120dp"
+                        android:layout_height="@dimen/fragment_user_center8"
                         android:gravity="bottom">
 
                         <TextView
                             android:id="@+id/train_time3"
                             android:layout_width="match_parent"
-                            android:layout_height="20dp"
+                            android:layout_height="80dp"
                             android:background="@color/colorStartTrainingBtn" />
 
                     </RelativeLayout>
@@ -361,26 +363,26 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/fragment_user_center_text2"
                         android:text="05/14"/>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="@dimen/fragment_user_center7"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center_horizontal">
 
                     <RelativeLayout
                         android:layout_width="3dp"
-                        android:layout_height="120dp"
+                        android:layout_height="@dimen/fragment_user_center8"
                         android:gravity="bottom">
 
                         <TextView
                             android:id="@+id/train_time4"
                             android:layout_width="match_parent"
-                            android:layout_height="20dp"
+                            android:layout_height="100dp"
                             android:background="@color/colorStartTrainingBtn" />
 
                     </RelativeLayout>
@@ -391,26 +393,26 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/fragment_user_center_text2"
                         android:text="05/15"/>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="@dimen/fragment_user_center7"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center_horizontal">
 
                     <RelativeLayout
                         android:layout_width="3dp"
-                        android:layout_height="120dp"
+                        android:layout_height="@dimen/fragment_user_center8"
                         android:gravity="bottom">
 
                         <TextView
                             android:id="@+id/train_time5"
                             android:layout_width="match_parent"
-                            android:layout_height="80dp"
+                            android:layout_height="120dp"
                             android:background="@color/colorStartTrainingBtn" />
 
                     </RelativeLayout>
@@ -421,26 +423,26 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/fragment_user_center_text2"
                         android:text="05/16"/>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="@dimen/fragment_user_center7"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center_horizontal">
 
                     <RelativeLayout
                         android:layout_width="3dp"
-                        android:layout_height="120dp"
+                        android:layout_height="@dimen/fragment_user_center8"
                         android:gravity="bottom">
 
                         <TextView
                             android:id="@+id/train_time6"
                             android:layout_width="match_parent"
-                            android:layout_height="100dp"
+                            android:layout_height="140dp"
                             android:background="@color/colorStartTrainingBtn" />
 
                     </RelativeLayout>
@@ -451,26 +453,26 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/fragment_user_center_text2"
                         android:text="05/17"/>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="100dp"
+                    android:layout_width="@dimen/fragment_user_center7"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center_horizontal">
 
                     <RelativeLayout
                         android:layout_width="3dp"
-                        android:layout_height="120dp"
+                        android:layout_height="@dimen/fragment_user_center8"
                         android:gravity="bottom">
 
                         <TextView
                             android:id="@+id/train_time7"
                             android:layout_width="match_parent"
-                            android:layout_height="120dp"
+                            android:layout_height="160dp"
                             android:background="@color/colorStartTrainingBtn" />
 
                     </RelativeLayout>
@@ -481,7 +483,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:textColor="@color/colorWhite"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/fragment_user_center_text2"
                         android:text="05/18"/>
 
                 </LinearLayout>

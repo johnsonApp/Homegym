@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:layout_marginRight="54dp"
+        android:layout_marginRight="50dp"
         android:layout_marginTop="30dp"
         android:src="@drawable/close_icon" />
 
@@ -22,13 +22,14 @@
         android:id="@+id/connect_status_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/connect_ble1"
         android:src="@drawable/connect_ble_warning" />
 
     <TextView
         android:id="@+id/connect_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="@dimen/connect_ble3"
         android:textSize="36sp"
         android:textColor="@color/colorWhite"
         android:text="@string/connect_ble_warning" />
@@ -37,7 +38,7 @@
         android:id="@+id/tips_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="@dimen/connect_ble3"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:visibility="visible">
@@ -62,12 +63,12 @@
         android:id="@+id/button_connect_ble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/connect_ble2"
         android:background="@color/colorButtonBackground"
-        android:text="@string/connect_ble_connect"
-        android:textColor="@color/colorWhite"
-        android:layout_marginTop="6dp"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
-        android:textSize="24sp" />
+        android:text="@string/connect_ble_connect"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/connect_ble_text" />
 
 </LinearLayout>

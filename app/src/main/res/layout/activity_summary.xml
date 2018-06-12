@@ -18,22 +18,20 @@
 
     <ImageView
         android:id="@+id/emoji"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
+        android:layout_width="@dimen/summary2"
+        android:layout_height="@dimen/summary2"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/summary1"
         android:scaleType="fitXY"
-        android:src="@drawable/emoji2"/>
+        android:src="@drawable/emoji1"/>
 
     <LinearLayout
         android:id="@+id/tips"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/summary3"
         android:layout_below="@id/emoji"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
         android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:gravity="center_horizontal">
@@ -43,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="@android:color/black"
-            android:textSize="26sp"
+            android:textSize="@dimen/summary_text1"
             android:text="@string/tips1"/>
 
         <TextView
@@ -51,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="@color/colorButtonBackground"
-            android:textSize="26sp"
+            android:textSize="@dimen/summary_text1"
             android:text="@string/tips2"/>
 
     </LinearLayout>
@@ -74,7 +72,7 @@
             android:layout_marginStart="50dp"
             android:gravity="center_vertical"
             android:textColor="@android:color/black"
-            android:textSize="26sp"
+            android:textSize="@dimen/summary_text1"
             android:text="@string/training_record"/>
 
     </RelativeLayout>
@@ -82,8 +80,9 @@
     <LinearLayout
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="0dp"
         android:layout_below="@id/middle_layout"
+        android:layout_alignParentBottom="true"
         android:layout_centerVertical="true"
         android:orientation="vertical"
         android:background="@android:color/black">
@@ -91,7 +90,7 @@
         <LinearLayout
             android:id="@+id/bottom1"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/summary3"
             android:orientation="horizontal"
             android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
@@ -110,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:textColor="@android:color/white"
-                android:textSize="26sp"
+                android:textSize="@dimen/summary_text1"
                 android:text="@string/training_time1"/>
 
             <TextView
@@ -119,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:layout_marginStart="10dp"
-                android:textSize="26sp"
+                android:textSize="@dimen/summary_text1"
                 android:text="00:00:00"/>
 
         </LinearLayout>
@@ -127,7 +126,7 @@
         <LinearLayout
             android:id="@+id/bottom2"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/summary3"
             android:orientation="horizontal"
             android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
@@ -146,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:textColor="@android:color/white"
-                android:textSize="26sp"
+                android:textSize="@dimen/summary_text1"
                 android:text="@string/training_number"/>
 
             <TextView
@@ -155,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:layout_marginStart="10dp"
-                android:textSize="26sp"
+                android:textSize="@dimen/summary_text1"
                 android:text="0"/>
 
         </LinearLayout>
@@ -163,7 +162,7 @@
         <LinearLayout
             android:id="@+id/bottom3"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/summary3"
             android:orientation="horizontal"
             android:layout_marginStart="50dp"
             android:layout_marginTop="20dp"
@@ -181,7 +180,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:textColor="@android:color/white"
-                android:textSize="26sp"
+                android:textSize="@dimen/summary_text1"
                 android:text="@string/training_resistance"/>
 
             <TextView
@@ -190,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:textColor="#ffff8e00"
-                android:textSize="26sp"
+                android:textSize="@dimen/summary_text1"
                 android:text="0"/>
 
         </LinearLayout>

@@ -12,7 +12,7 @@ import com.jht.homegym.utils.Utils;
 
 public class FreeModeSelectActivity extends AppCompatActivity{
 
-    private final static String TAG = "FreeModeTrainingActivity";
+    private final static String TAG = "FreeModeSelectActivity";
 
     //private final static int TEXTUNSELECTCOLOR = R.color.colorTextUnSelect;
     //private final static int TEXTSELECTEDCOLOR = R.color.colorBlack;

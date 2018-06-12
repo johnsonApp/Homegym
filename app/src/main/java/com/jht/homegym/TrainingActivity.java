@@ -93,7 +93,7 @@ public class TrainingActivity extends Activity {
 
     private long mStartTime = 0L;
     private long mRestTime = 0L;
-    private long mTotalTime = 0L;
+    private int mTotalTime = 0;
     private Timer mTimer = new Timer();
     private TimerTask mTimerTask;
 
@@ -113,8 +113,6 @@ public class TrainingActivity extends Activity {
     private BluetoothGattCharacteristic mAccessoryReadCharacteristic;
     private BluetoothGattCharacteristic mAccessoryWriteCharacteristic;
     private BluetoothGattCharacteristic mAccessorySensorCharacteristic;
-    private BluetoothGattCharacteristic mRawDataCharacteristic;
-
 
     private BluetoothGattCharacteristic mHomegymReadCharacteristic;
     private BluetoothGattCharacteristic mHomegymWriteCharacteristic;
@@ -242,8 +240,8 @@ public class TrainingActivity extends Activity {
         //mFreeTrainingQuery = mFreeTrainingBox.query().build();
         //List<FreeTraining> listFreeTraining = mFreeTrainingQuery.find();
 
-        mDumbbellExercise = new AccessoryExercise();
-        mRopeExercise = new AccessoryExercise();
+        mDumbbellExercise = new AccessoryExercise(Utils.DUMBBELL);
+        mRopeExercise = new AccessoryExercise(Utils.ROPE_SKIP);
     }
 
     View.OnClickListener listener = new View.OnClickListener() {
@@ -308,6 +306,7 @@ public class TrainingActivity extends Activity {
 
     public void onStop(){
         super.onStop();
+        setProgramNoticeEnable(false);
         doUnBindService();
     }
 
@@ -441,7 +440,7 @@ public class TrainingActivity extends Activity {
                 }
                 data[dataTemp.length] = (byte) (crc & 0xff);*/
                 byte[] data = characteristic.getValue();
-               int mode = BLECommand.getPacketMode(data);
+                int mode = BLECommand.getPacketMode(data);
                 if(BLECommand.COMMAND_REPLY_PARAMETER == mode){
                     byte[] dataSource = BLECommand.unpacketReplyParameter(data);
                     if(null != dataSource && dataSource.length > 1){
@@ -614,6 +613,11 @@ public class TrainingActivity extends Activity {
         return true;
     }
 
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishTraining();
+    }
+
     private void switchToPause(){
         mTimer.cancel();
         mTimer.purge();
@@ -629,7 +633,7 @@ public class TrainingActivity extends Activity {
             }
         };
         mTimer.schedule(mTimerTask, 1000, 1000);
-        mTotalTime = mRestTime - mStartTime + mTotalTime;
+        //mTotalTime = mRestTime - mStartTime + mTotalTime;
     }
 
     private void switchToTraining(){
@@ -654,7 +658,7 @@ public class TrainingActivity extends Activity {
         FreeTraining freeTraining = new FreeTraining();
         freeTraining.setUserId(1);
         freeTraining.setCurTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis())));
-        freeTraining.setTotalTime((int)(mTotalTime / 1000));
+        freeTraining.setTotalTime((int)(mTotalTime));
         freeTraining.setDumbbellNum(mDumbbellExerciseCounter);
         freeTraining.setSkipRopeNum(mRopeSkipExerciseCounter);
         freeTraining.setPullRopeNum(mHomegymExerciseCounter);
@@ -737,7 +741,13 @@ public class TrainingActivity extends Activity {
                             }
                             mCurrentStatus = status;
                         }
-                        mHandler.sendMessage(mHandler.obtainMessage(TIME_CHANGE, timeReversal(programData.getTimeMinute(),programData.getTimeSecond())));
+                        int min = programData.getTimeMinute();
+                        int sec = programData.getTimeSecond();
+                        int total = (min * 60 + sec);
+                        if(mTotalTime != total) {
+                            mHandler.sendMessage(mHandler.obtainMessage(TIME_CHANGE, timeReversal(min, sec)));
+                            mTotalTime = total;
+                        }
                     }
                 }else if(BLECommand.PROGRAM_MODE_ACCESSORY == programMode) {
                     AccessoryData accessoryData = new AccessoryData(data);

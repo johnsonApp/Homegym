@@ -251,7 +251,7 @@ public class MultipleBleService extends Service implements Constants, BleListene
         }
         if (mConnectedAddressList.contains(address)) {
             Log.d(TAG, "This is device already connected.");
-            return true;
+            return false;
         }
         if (mBluetoothAdapter == null || address == null) {
             Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
@@ -261,7 +261,7 @@ public class MultipleBleService extends Service implements Constants, BleListene
         if (mBluetoothGattMap == null) {
             mBluetoothGattMap = new HashMap<>();
         }
-        if (mBluetoothGattMap.get(address) != null && mConnectedAddressList.contains(address)) {
+        if (mBluetoothGattMap.get(address) != null /*&& mConnectedAddressList.contains(address)*/) {
             Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
             if (mBluetoothGattMap.get(address).connect()) {
                 return true;
@@ -280,7 +280,9 @@ public class MultipleBleService extends Service implements Constants, BleListene
         if (bluetoothGatt != null) {
             mBluetoothGattMap.put(address, bluetoothGatt);
             Log.d(TAG, "Trying to create a new connection.");
-            mConnectedAddressList.add(address);
+            if(!mConnectedAddressList.contains(address)) {
+                mConnectedAddressList.add(address);
+            }
             return true;
         }
         return false;
@@ -687,7 +689,7 @@ public class MultipleBleService extends Service implements Constants, BleListene
             String tmpAddress = gatt.getDevice().getAddress();
             if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 intentAction = ACTION_GATT_DISCONNECTED;
-                Log.i(TAG, "Disconnected from GATT server.");
+                Log.i(TAG, "Disconnected from GATT server. tempAddress " + tmpAddress);
                 broadcastUpdate(intentAction, tmpAddress);
                 close(tmpAddress);
             } else if (newState == BluetoothProfile.STATE_CONNECTING) {
@@ -695,7 +697,9 @@ public class MultipleBleService extends Service implements Constants, BleListene
                 Log.i(TAG, "Connecting to GATT server.");
                 broadcastUpdate(intentAction, tmpAddress);
             } else if (newState == BluetoothProfile.STATE_CONNECTED) {
-                mConnectedAddressList.add(tmpAddress);
+                if(!mConnectedAddressList.contains(tmpAddress)) {
+                    mConnectedAddressList.add(tmpAddress);
+                }
                 intentAction = ACTION_GATT_CONNECTED;
                 broadcastUpdate(intentAction, tmpAddress);
                 Log.i(TAG, "Connected to GATT server.");

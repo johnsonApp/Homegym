@@ -1,5 +1,7 @@
 package com.jht.homegym.algorithm;
 
+import com.jht.homegym.utils.Utils;
+
 public class AccessoryExercise {
 
     // Sensor raw data
@@ -16,12 +18,26 @@ public class AccessoryExercise {
     private byte acce_choose = 0;
 
     // Dumbbell counting
-    private boolean isUp = false, isGravityX = false;
+    private boolean isUp = false;
     private int exercise_counter = 0;
     private short active_counter = 0;
     // Threshold
     private float acce_gravity_sub_threshold = 0.3f, acce_gravity_std_threshold = 1.0f;
     private byte active_threshold = 15, timestamp_threshold = 5;
+
+    public AccessoryExercise(){
+    }
+
+    public AccessoryExercise(int accessoryMode){
+        if(accessoryMode == Utils.DUMBBELL) {
+            this.acce_gravity_sub_threshold = 0.3f;
+            this.timestamp_threshold = 5;
+        }
+        else if(accessoryMode == Utils.ROPE_SKIP) {
+            this.acce_gravity_sub_threshold = 1.0f;
+            this.timestamp_threshold = 0;
+        }
+    }
 
     public int exerciseCounting(final float x, final float y, final float z) {
         acceX = x;
@@ -35,7 +51,6 @@ public class AccessoryExercise {
 
         // Check to get gravity x, y or z
         if(active_counter < 10){
-            isGravityX = (Math.abs(acce_gravity[0]) > Math.abs(acce_gravity[2]))? true : false;
             if(Math.abs(acce_gravity[0]) > Math.abs(acce_gravity[2])){
                 if(Math.abs(acce_gravity[0]) > Math.abs(acce_gravity[1])) acce_choose = 0;
                 else acce_choose = 1;
@@ -56,7 +71,6 @@ public class AccessoryExercise {
                 acce_gravity_get = acce_gravity[2];
                 break;
         }
-        //acce_gravity_get = (isGravityX)? acce_gravity[0]:acce_gravity[2];
 
         // Buffer shift and apply average filter
         // Subtraction
@@ -132,7 +146,7 @@ public class AccessoryExercise {
         return exercise_counter;
     }
     public float getV1(){
-        return this.acce_gravity_get;
+        return this.acce_gravity_sub;
     }
     public float getV2(){
         return this.active_counter;

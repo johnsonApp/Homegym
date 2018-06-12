@@ -69,19 +69,20 @@ public class BleActivity extends AppCompatActivity {
                 deviceMap.put(DEVICE_NAME, tmpDevName);
                 deviceMap.put(ADDRESS, tmpDevAddress);
                 deviceMap.put(IS_CONNECTED, false);
-                mDeviceList.add(deviceMap);
+                addDevice(deviceMap);
+                //mDeviceList.add(deviceMap);
                 //mDeviceAdapter.notifyDataSetChanged();
             } else if (intent.getAction().equals(Constants.ACTION_GATT_CONNECTED)) {
-                Log.i(TAG, "onReceive: CONNECTED: " + mBleService.getConnectDevices().size());
-                if(mBleService.getConnectDevices().size() > 0){
+                Log.i(TAG, "onReceive: CONNECTED: " + getConnectNum());
+                if(getConnectNum() > 0){
                     mIsConnected = true;
                     connectChanged();
                 }
                 dismissDialog();
                 updateUI(Constants.STATE_CONNECTED);
             } else if (intent.getAction().equals(Constants.ACTION_GATT_DISCONNECTED)) {
-                Log.i(TAG, "onReceive: DISCONNECTED: " + mBleService.getConnectDevices().size());
-                if(mBleService.getConnectDevices().size() == 0){
+                Log.i(TAG, "onReceive: DISCONNECTED: " + getConnectNum());
+                if(getConnectNum() == 0){
                     mIsConnected = false;
                     connectChanged();
                 }
@@ -117,6 +118,7 @@ public class BleActivity extends AppCompatActivity {
                 if (mBleService.enableBluetooth(true)) {
                     if(Utils.handleVersionPermission(BleActivity.this)){
                         List<BluetoothDevice> list = mBleService.getConnectDevices();
+                        Log.d(TAG,"onServiceConnected getConnectDevices " + list.size());
                         if (list == null || list.size() == 0){
                             if (mDeviceList == null || mDeviceList.size() == 0) {
                                 setScan(true);
@@ -202,6 +204,17 @@ public class BleActivity extends AppCompatActivity {
         });
     }
 
+    private int getConnectNum(){
+        int num = 0;
+        for (int i = 0; i < mDeviceList.size(); i++) {
+            HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
+            boolean isConnect =  (Boolean) (mDeviceList.get(i)).get(IS_CONNECTED);
+            if (isConnect) {
+                num ++;
+            }
+        }
+        return num;
+    }
     public void setScan(boolean scan){
         if(null == mProgressDialog || !mProgressDialog.isShowing()) {
             showDialog(getResources().getString(R.string.scanning));
@@ -344,7 +357,7 @@ public class BleActivity extends AppCompatActivity {
                 mBleService.disconnect(devMap.get(ADDRESS).toString());
             }
         }
-        Log.i(TAG,"connectDevice " + size);
+        Log.i(TAG,"disconnectDevice " + size);
     }
 
     private void connectDevice() {
@@ -373,6 +386,18 @@ public class BleActivity extends AppCompatActivity {
 
     }
 
+    private void addDevice(HashMap<String,Object> device) {
+        String addressTemp = device.get(ADDRESS).toString();
+        int size = mDeviceList.size();
+        for (int i = 0; i < size; i++) {
+            HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
+            String address = devMap.get(ADDRESS).toString();
+            if(address.equals(addressTemp)){
+                return;
+            }
+        }
+        mDeviceList.add(device);
+    }
     public void updateUI(int status){
 
     }

@@ -261,6 +261,7 @@ public class ConnectBleActivity extends BleActivity implements View.OnClickListe
                     finish();
                 }else {
                     mRetryTime = 0;
+                    mIsCancel = false;
                     setScan(true);
                 }
                 break;

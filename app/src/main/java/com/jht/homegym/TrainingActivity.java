@@ -529,14 +529,18 @@ public class TrainingActivity extends Activity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mBleService.setCharacteristicNotification(address,readCharacteristic,true);
+                if(null != mBleService) {
+                    mBleService.setCharacteristicNotification(address, readCharacteristic, true);
+                }
             }
         }, notifyDealy);
 
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mBleService.readCharacteristic(address, readCharacteristic);
+                if(null != mBleService) {
+                    mBleService.readCharacteristic(address, readCharacteristic);
+                }
             }
         }, readDealy);
     }

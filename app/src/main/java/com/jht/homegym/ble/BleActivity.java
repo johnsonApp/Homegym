@@ -335,6 +335,9 @@ public class BleActivity extends AppCompatActivity {
     public void setConnect(){
         mIsCancel = false;
         int size = mDeviceList.size();
+        if(size == 0) {
+            mRetryTime = 0;
+        }
         if(size < 2){
             setScan(true);
         }else {

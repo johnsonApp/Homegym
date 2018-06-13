@@ -207,7 +207,6 @@ public class BleActivity extends AppCompatActivity {
     private int getConnectNum(){
         int num = 0;
         for (int i = 0; i < mDeviceList.size(); i++) {
-            HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
             boolean isConnect =  (Boolean) (mDeviceList.get(i)).get(IS_CONNECTED);
             if (isConnect) {
                 num ++;
@@ -248,7 +247,6 @@ public class BleActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (null != mBleService && mBleService.isScanning()) {
             mBleService.scanLeDevice(false);
-            mRetryTime = RETRY_TIME;
             return;
         }
         super.onBackPressed();
@@ -289,6 +287,9 @@ public class BleActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
 
     private void showDialog(String message) {
+        if(null != mProgressDialog && mProgressDialog.isShowing()) {
+            dismissDialog();
+        }
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setProgressStyle(mProgressDialog.STYLE_SPINNER);
         mProgressDialog.setCanceledOnTouchOutside(false);
@@ -371,18 +372,24 @@ public class BleActivity extends AppCompatActivity {
                 //Toast.makeText(this,"Can not find any device ,please retry",Toast.LENGTH_LONG).show();
                 return;
             }
+            showDialog(getResources().getString(R.string.connecting));
+            int connectNum = 0;
             for (int i = 0; i < size; i++) {
                 HashMap<String, Object> devMap = (HashMap<String, Object>) mDeviceList.get(i);
                 String address = devMap.get(ADDRESS).toString();
                 Log.i(TAG,"connectDevice " + address);
                 if(!(boolean)devMap.get(IS_CONNECTED)) {
-                    showDialog(getResources().getString(R.string.connecting));
                     boolean result =  mBleService.connect(address);
                     Log.d(TAG,"connectDevice result " + result);
                     if(!result){
                         dismissDialog();
                     }
+                    connectNum ++;
                 }
+            }
+            Log.d(TAG,"connectDevice connectNum " + connectNum);
+            if(0 == connectNum) {
+                dismissDialog();
             }
             Log.i(TAG,"connectDevice " + size);
         }

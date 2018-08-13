@@ -247,7 +247,7 @@ public class AccessoryExercise {
         angle += ((acce_point[4][0] - acce_point[1][0])*(acce_point[7][1]-acce_point[4][1])) - ((acce_point[4][1] - acce_point[1][1])*(acce_point[7][0] - acce_point[4][0]));
         angle += ((acce_point[5][0] - acce_point[2][0])*(acce_point[8][1]-acce_point[5][1])) - ((acce_point[5][1] - acce_point[2][1])*(acce_point[8][0] - acce_point[5][0]));
         // Calculate average for fast and slow rotation
-        angle = angle / 8.0f;
+        angle /= 8.0f;
 
         // Jump rope
         // Inner product (angle) > 0 => clockwise, < 0 => counter-clockwise, = 0 => stationary
@@ -345,16 +345,6 @@ public class AccessoryExercise {
         // Jump rope mode
         // Check clockwise, counter-clockwoise, stationary or move up&down
         if (temp_counter > 0) {
-            if (angle_counter_top10[0] > 6) {
-                temp_counter = 0;
-                isRotating = false;
-            }
-            if (angle_counter_top10[1] < 8 && angle_counter_top10[2] < 8) {
-                if ((angle_counter[2] > 20 && angle_counter[2] < 40) && (angle_counter[1] > 20 && angle_counter[1] < 40)) {
-                    temp_counter = 0;
-                    isRotating = false;
-                }
-            }
 
             if (!isRotating) {
                 // When not rotating, check it
@@ -369,16 +359,27 @@ public class AccessoryExercise {
                 }
 
                 if (acce_std_x > 2.0f && acce_std_y > 2.0f) {
-                    if (angle_counter[2] > angle_counter[0] || angle_counter[1] > angle_counter[0]) {
-                        if (angle_counter[2] > 40) {
+//                    if (angle_counter[2] > angle_counter[0] || angle_counter[1] > angle_counter[0]) {
+                        if (angle_counter[2] > 30) {
                             cw_counter += temp_counter;
                             temp_counter = 0;
                             isRotating = true;
-                        } else if (angle_counter[1] > 40) {
+                        } else if (angle_counter[1] > 30) {
                             ccw_counter += temp_counter;
                             temp_counter = 0;
                             isRotating = true;
                         }
+//                    }
+                }
+
+                if (angle_counter_top10[0] > 7) {
+                    temp_counter = 0;
+                    isRotating = false;
+                }
+                if (angle_counter_top10[1] < 8 && angle_counter_top10[2] < 8) {
+                    if ((angle_counter[2] > 20 && angle_counter[2] < 40) && (angle_counter[1] > 20 && angle_counter[1] < 40)) {
+                        temp_counter = 0;
+                        isRotating = false;
                     }
                 }
 
@@ -390,6 +391,11 @@ public class AccessoryExercise {
                 } else {
                     ccw_counter += temp_counter;
                     temp_counter = 0;
+                }
+
+                if (angle_counter[0] > 30) {
+                    temp_counter = 0;
+                    isRotating = false;
                 }
             }
         }
